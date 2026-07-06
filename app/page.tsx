@@ -5,6 +5,7 @@ import RoomsPage from "@/components/RoomsView";
 import TenantsPage from "@/components/TenantsView";
 import BillingPage from "@/components/BillingView";
 import DashboardView from "@/components/DashboardView";
+import { ChartBarIcon, HouseLineIcon, UsersThreeIcon, InvoiceIcon } from "@phosphor-icons/react";
 
 type ActiveView = "overview" | "rooms" | "tenants" | "billing";
 
@@ -31,7 +32,7 @@ export default function DashboardPage() {
     <div className="flex h-screen w-screen bg-slate-50 font-sans text-slate-800 antialiased overflow-hidden">
       
       {/* 🧭 PREMIUM SIDEBAR PANEL */}
-      <aside className="w-72 bg-slate-900 text-slate-200 flex flex-col border-r border-slate-800 shadow-xl shrink-0">
+      <aside className="w-60 bg-slate-900 text-slate-200 flex flex-col border-r border-slate-800 shadow-xl shrink-0">
         {/* Branding Container */}
         <div className="p-7 border-b border-slate-800/60 bg-slate-950/40 backdrop-blur-sm">
           <div className="flex items-center gap-3">
@@ -55,8 +56,8 @@ export default function DashboardPage() {
                 : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"
             }`}
           >
-            <span className="text-lg">📊</span>
-            <span>Dashboard Overview</span>
+            <ChartBarIcon className="text-2xl font-bold" />
+            <span>Dashboard</span>
           </button>
           
           <button 
@@ -67,8 +68,8 @@ export default function DashboardPage() {
                 : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"
             }`}
           >
-            <span className="text-lg">🏢</span>
-            <span>Manage Rooms</span>
+            <HouseLineIcon className="text-2xl font-bold" />
+            <span>Rooms</span>
           </button>
 
           <button 
@@ -79,8 +80,8 @@ export default function DashboardPage() {
                 : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"
             }`}
           >
-            <span className="text-lg">👥</span>
-            <span>Tenants Registry</span>
+            <UsersThreeIcon className="text-2xl font-bold"/>
+            <span>Tenants</span>
           </button>
 
           <button 
@@ -91,37 +92,24 @@ export default function DashboardPage() {
                 : "text-slate-400 hover:text-slate-200 hover:bg-slate-800/50"
             }`}
           >
-            <span className="text-lg">🧾</span>
-            <span>Utility & Billing</span>
+            <InvoiceIcon className="text-2xl font-bold" />
+            <span>Billing</span>
           </button>
         </nav>
 
-        {/* Diagnostics Footer */}
-        <div className="p-5 border-t border-slate-800/60 bg-slate-950/20 text-center text-xs font-medium text-slate-500 tracking-wide">
-          v1.0.0 • Connected to Aiven MySQL
-        </div>
+
       </aside>
 
       {/* 🖥️ DYNAMIC CONTENT WORKSPACE */}
       <main className="flex-1 flex flex-col h-screen overflow-hidden bg-slate-50">
         {/* Top Header Toolbar */}
         <header className="h-20 bg-white border-b border-slate-200/80 px-8 flex justify-between items-center shadow-sm shrink-0">
-          <div className="flex items-center gap-2 text-sm font-medium text-slate-400">
-            <span>Workspace</span>
-            <span className="text-slate-300">/</span>
-            <span className="text-slate-800 font-bold capitalize tracking-wide bg-slate-100 px-2.5 py-1 rounded-md text-xs">
+          <div className="flex items-center gap-1 text-sm font-medium text-slate-400">
+            <span className="text-slate-800 font-bold capitalize tracking-wide  px-1 py-1 text-3xl">
               {activeView}
             </span>
           </div>
           
-          {/* Connection Status Badge */}
-          <div className="flex items-center gap-2.5 bg-green-50 border border-green-200/60 px-3.5 py-1.5 rounded-full shadow-inner shadow-green-100/50">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-            </span>
-            <span className="text-xs font-bold text-green-700 tracking-wide">Aiven DB: Connected</span>
-          </div>
         </header>
 
         {/* Dynamic Workspace Container */}
