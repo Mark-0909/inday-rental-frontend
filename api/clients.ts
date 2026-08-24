@@ -10,14 +10,15 @@ const API = axios.create({
 export const endpoints = {
     rooms:{
         getAll: () => API.get("/rooms"),
-        create: (data: any) => API.post("/rooms", data),
+        create: (data: Record<string, unknown>) => API.post("/rooms", data),
+        update: (id: number, data: Record<string, unknown>) => API.put(`/rooms/${id}`, data),
     },
     tenants:{
         getAll: () => API.get("/tenants"),
-        register: (data:any) => API.post("/tenants", data),
+        register: (data: Record<string, unknown>) => API.post("/tenants", data),
     },
     billing:{
         getAll: () => API.get("/billing"),
-        create: (data:any) => API.post("/billing", data),
+        create: (data: Record<string, unknown>) => API.post("/billing", data),
     }
 }
