@@ -12,6 +12,7 @@ export const endpoints = {
         getAll: () => API.get("/rooms"),
         create: (data: Record<string, unknown>) => API.post("/rooms", data),
         update: (id: number, data: Record<string, unknown>) => API.put(`/rooms/${id}`, data),
+        remove: (id: number) => API.delete(`/rooms/${id}`),
     },
     tenants:{
         getAll: () => API.get("/tenants"),

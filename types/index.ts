@@ -5,7 +5,7 @@ export interface Room{
     monthlyRent: number;
     maxOccupancy: number;
     description?: string;
-    images: string;
+    images: string | string[];
     currentTenant?: Tenant | null;
 }
 
