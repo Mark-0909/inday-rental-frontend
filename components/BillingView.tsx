@@ -557,6 +557,7 @@ export default function BillingPage() {
         }
       `}</style>
 
+      {/* Header */}
       <div className="flex flex-col justify-between gap-3 md:flex-row md:items-end md:gap-4">
         <div>
           <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#d96c52] md:mb-2 md:text-xs">
@@ -581,93 +582,176 @@ export default function BillingPage() {
         </p>
       )}
 
-      {/* Streamlined Clean Table */}
+      {/* Invoices List Container */}
       <section className="overflow-hidden border border-[#dcd9d1] bg-[#f8f7f3]">
         {billings.length === 0 ? (
           <p className="py-10 text-center text-sm text-[#707770]">No invoice records found. Create an invoice to begin.</p>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-[#dcd9d1] text-left">
-              <thead className="bg-[#efede7] text-xs font-semibold uppercase tracking-[0.12em] text-[#707770]">
-                <tr>
-                  <th className="px-5 py-3">Tenant & Room</th>
-                  <th className="px-5 py-3">Due Date</th>
-                  <th className="px-5 py-3">Total Amount</th>
-                  <th className="px-5 py-3">Status</th>
-                  <th className="px-5 py-3 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#e5e2da] text-sm text-[#202522]">
-                {sortedBillings.map((bill) => (
-                  <tr key={bill.id} className="bg-[#f8f7f3] transition-colors hover:bg-[#f3f0e8]/50">
-                    <td className="px-5 py-3.5">
-                      <p className="font-semibold text-[#202522]">{bill.tenant?.fullName ?? "Unknown Tenant"}</p>
+          <>
+            {/* Mobile Card Layout (< md screen width) */}
+            <div className="divide-y divide-[#dcd9d1] md:hidden">
+              {sortedBillings.map((bill) => (
+                <div key={bill.id} className="p-4 space-y-3 bg-[#f8f7f3]">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <p className="font-semibold text-base text-[#202522]">
+                        {bill.tenant?.fullName ?? "Unknown Tenant"}
+                      </p>
                       <p className="text-xs text-[#707770]">Room {bill.room?.roomNumber ?? "-"}</p>
-                    </td>
-                    <td className="px-5 py-3.5 text-[#5b625b]">
-                      <p>{formatDate(bill.dueDate)}</p>
-                      {bill.datePaid && <p className="text-[11px] text-[#397052]">Paid: {formatDate(bill.datePaid)}</p>}
-                    </td>
-                    <td className="px-5 py-3.5 font-bold text-[#202522]">{formatCurrency(bill.totalAmount)}</td>
-                    <td className="px-5 py-3.5">
-                      <span
-                        className={`rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide ${
-                          bill.status === "PAID"
-                            ? "bg-[#dcecdf] text-[#397052]"
-                            : bill.status === "OVERDUE"
-                            ? "bg-[#fbeae5] text-[#9d4937]"
-                            : "bg-[#eee4d6] text-[#94613a]"
-                        }`}
+                    </div>
+                    <span
+                      className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide shrink-0 ${
+                        bill.status === "PAID"
+                          ? "bg-[#dcecdf] text-[#397052]"
+                          : bill.status === "OVERDUE"
+                          ? "bg-[#fbeae5] text-[#9d4937]"
+                          : "bg-[#eee4d6] text-[#94613a]"
+                      }`}
+                    >
+                      {bill.status.toLowerCase()}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 rounded-md border border-[#e5e2da] bg-[#efede7]/60 p-2.5 text-xs">
+                    <div>
+                      <span className="text-[#858b84] block">Due Date:</span>
+                      <span className="font-medium text-[#202522]">{formatDate(bill.dueDate)}</span>
+                      {bill.datePaid && (
+                        <p className="text-[10px] text-[#397052] mt-0.5">Paid: {formatDate(bill.datePaid)}</p>
+                      )}
+                    </div>
+                    <div className="text-right">
+                      <span className="text-[#858b84] block">Total Amount:</span>
+                      <span className="text-sm font-bold text-[#202522]">{formatCurrency(bill.totalAmount)}</span>
+                    </div>
+                  </div>
+
+                  {/* Actions Toolbar for Mobile */}
+                  <div className="flex flex-wrap items-center justify-end gap-1.5 pt-1">
+                    <button
+                      onClick={() => setViewingBilling(bill)}
+                      className="inline-flex items-center gap-1 rounded-md border border-[#cbc7bc] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#202522] hover:border-[#202522]"
+                    >
+                      <EyeIcon size={14} /> View
+                    </button>
+
+                    {bill.status === "PAID" ? (
+                      <button
+                        onClick={() => setReceiptBilling(bill)}
+                        className="inline-flex items-center gap-1 rounded-md border border-[#b4d2be] bg-[#edf6f0] px-2.5 py-1.5 text-xs font-semibold text-[#397052] hover:bg-[#dcecdf]"
                       >
-                        {bill.status.toLowerCase()}
-                      </span>
-                    </td>
-                    <td className="px-5 py-3.5">
-                      <div className="flex justify-end gap-1.5 sm:gap-2">
-                        <button
-                          onClick={() => setViewingBilling(bill)}
-                          className="inline-flex items-center gap-1 rounded-md border border-[#cbc7bc] px-2.5 py-1.5 text-xs font-semibold text-[#202522] hover:border-[#202522]"
-                          title="View statement details"
-                        >
-                          <EyeIcon size={14} /> View
-                        </button>
+                        <ReceiptIcon size={14} /> Receipt
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => openSettleModal(bill)}
+                        className="inline-flex items-center gap-1 rounded-md border border-[#b4d2be] bg-[#edf6f0] px-2.5 py-1.5 text-xs font-semibold text-[#397052] hover:border-[#397052]"
+                      >
+                        <CheckCircleIcon size={14} /> Settle
+                      </button>
+                    )}
 
-                        {bill.status === "PAID" ? (
-                          <button
-                            onClick={() => setReceiptBilling(bill)}
-                            className="inline-flex items-center gap-1 rounded-md border border-[#b4d2be] bg-[#edf6f0] px-2.5 py-1.5 text-xs font-semibold text-[#397052] hover:bg-[#dcecdf]"
-                            title="Print Official Receipt"
-                          >
-                            <ReceiptIcon size={14} /> Receipt
-                          </button>
-                        ) : (
-                          <button
-                            onClick={() => openSettleModal(bill)}
-                            className="inline-flex items-center gap-1 rounded-md border border-[#b4d2be] px-2.5 py-1.5 text-xs font-semibold text-[#397052] hover:border-[#397052]"
-                          >
-                            <CheckCircleIcon size={14} /> Settle
-                          </button>
-                        )}
+                    <button
+                      onClick={() => openEditBilling(bill)}
+                      className="inline-flex items-center gap-1 rounded-md border border-[#cbc7bc] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#202522] hover:border-[#202522]"
+                    >
+                      <PencilSimpleIcon size={14} /> Edit
+                    </button>
+                    <button
+                      onClick={() => setDeletingBilling(bill)}
+                      className="inline-flex items-center gap-1 rounded-md border border-[#e1b8ae] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#9d4937] hover:border-[#9d4937]"
+                    >
+                      <TrashIcon size={14} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
 
-                        <button
-                          onClick={() => openEditBilling(bill)}
-                          className="inline-flex items-center gap-1 rounded-md border border-[#cbc7bc] px-2.5 py-1.5 text-xs font-semibold text-[#202522] hover:border-[#202522]"
-                        >
-                          <PencilSimpleIcon size={14} /> Edit
-                        </button>
-                        <button
-                          onClick={() => setDeletingBilling(bill)}
-                          className="inline-flex items-center gap-1 rounded-md border border-[#e1b8ae] px-2.5 py-1.5 text-xs font-semibold text-[#9d4937] hover:border-[#9d4937]"
-                        >
-                          <TrashIcon size={14} />
-                        </button>
-                      </div>
-                    </td>
+            {/* Desktop Table View (>= md screen width) */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="min-w-full divide-y divide-[#dcd9d1] text-left">
+                <thead className="bg-[#efede7] text-xs font-semibold uppercase tracking-[0.12em] text-[#707770]">
+                  <tr>
+                    <th className="px-5 py-3 whitespace-nowrap">Tenant & Room</th>
+                    <th className="px-5 py-3 whitespace-nowrap">Due Date</th>
+                    <th className="px-5 py-3 whitespace-nowrap">Total Amount</th>
+                    <th className="px-5 py-3 whitespace-nowrap">Status</th>
+                    <th className="px-5 py-3 whitespace-nowrap text-right">Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="divide-y divide-[#e5e2da] text-sm text-[#202522]">
+                  {sortedBillings.map((bill) => (
+                    <tr key={bill.id} className="bg-[#f8f7f3] transition-colors hover:bg-[#f3f0e8]/50">
+                      <td className="px-5 py-3.5 whitespace-nowrap">
+                        <p className="font-semibold text-[#202522]">{bill.tenant?.fullName ?? "Unknown Tenant"}</p>
+                        <p className="text-xs text-[#707770]">Room {bill.room?.roomNumber ?? "-"}</p>
+                      </td>
+                      <td className="px-5 py-3.5 whitespace-nowrap text-[#5b625b]">
+                        <p>{formatDate(bill.dueDate)}</p>
+                        {bill.datePaid && <p className="text-[11px] text-[#397052]">Paid: {formatDate(bill.datePaid)}</p>}
+                      </td>
+                      <td className="px-5 py-3.5 whitespace-nowrap font-bold text-[#202522]">{formatCurrency(bill.totalAmount)}</td>
+                      <td className="px-5 py-3.5 whitespace-nowrap">
+                        <span
+                          className={`rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide ${
+                            bill.status === "PAID"
+                              ? "bg-[#dcecdf] text-[#397052]"
+                              : bill.status === "OVERDUE"
+                              ? "bg-[#fbeae5] text-[#9d4937]"
+                              : "bg-[#eee4d6] text-[#94613a]"
+                          }`}
+                        >
+                          {bill.status.toLowerCase()}
+                        </span>
+                      </td>
+                      <td className="px-5 py-3.5 whitespace-nowrap">
+                        <div className="flex justify-end gap-1.5 sm:gap-2">
+                          <button
+                            onClick={() => setViewingBilling(bill)}
+                            className="inline-flex items-center gap-1 rounded-md border border-[#cbc7bc] px-2.5 py-1.5 text-xs font-semibold text-[#202522] hover:border-[#202522]"
+                            title="View statement details"
+                          >
+                            <EyeIcon size={14} /> View
+                          </button>
+
+                          {bill.status === "PAID" ? (
+                            <button
+                              onClick={() => setReceiptBilling(bill)}
+                              className="inline-flex items-center gap-1 rounded-md border border-[#b4d2be] bg-[#edf6f0] px-2.5 py-1.5 text-xs font-semibold text-[#397052] hover:bg-[#dcecdf]"
+                              title="Print Official Receipt"
+                            >
+                              <ReceiptIcon size={14} /> Receipt
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => openSettleModal(bill)}
+                              className="inline-flex items-center gap-1 rounded-md border border-[#b4d2be] px-2.5 py-1.5 text-xs font-semibold text-[#397052] hover:border-[#397052]"
+                            >
+                              <CheckCircleIcon size={14} /> Settle
+                            </button>
+                          )}
+
+                          <button
+                            onClick={() => openEditBilling(bill)}
+                            className="inline-flex items-center gap-1 rounded-md border border-[#cbc7bc] px-2.5 py-1.5 text-xs font-semibold text-[#202522] hover:border-[#202522]"
+                          >
+                            <PencilSimpleIcon size={14} /> Edit
+                          </button>
+                          <button
+                            onClick={() => setDeletingBilling(bill)}
+                            className="inline-flex items-center gap-1 rounded-md border border-[#e1b8ae] px-2.5 py-1.5 text-xs font-semibold text-[#9d4937] hover:border-[#9d4937]"
+                          >
+                            <TrashIcon size={14} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </section>
 
@@ -835,7 +919,7 @@ export default function BillingPage() {
           )
         : null}
 
-      {/* Styled 80mm Top-Left Docked Receipt Modal with Transparent Electricity Matrix */}
+      {/* Styled 80mm Top-Left Docked Receipt Modal */}
       {receiptBilling && typeof document !== "undefined"
         ? createPortal(
             <div
@@ -849,7 +933,7 @@ export default function BillingPage() {
                 role="dialog"
                 aria-modal="true"
                 onClick={(e) => e.stopPropagation()}
-                className="relative max-h-[95vh] w-full max-w-[340px] overflow-hidden rounded-md border-t-4 border-[#397052] bg-white p-5 text-[#202522] shadow-2xl"
+                className="relative max-h-[95vh] w-full max-w-85 overflow-hidden rounded-md border-t-4 border-[#397052] bg-white p-5 text-[#202522] shadow-2xl"
               >
                 {/* Contained House Watermark */}
                 <div
