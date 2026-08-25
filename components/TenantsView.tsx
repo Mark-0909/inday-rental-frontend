@@ -179,17 +179,6 @@ export default function TenantsPage() {
         await endpoints.tenants.register(payload);
       }
 
-      // Sync Room entity availability if endpoint exists
-      if (endpoints.rooms?.update && selectedRoomId) {
-        try {
-          await endpoints.rooms.update(selectedRoomId, {
-            status: isInactive ? "AVAILABLE" : "OCCUPIED",
-          });
-        } catch {
-          // Fallback if backend does not support direct room status PUT
-        }
-      }
-
       loadData();
       closeEditor();
     } catch (saveError: unknown) {
@@ -228,18 +217,6 @@ export default function TenantsPage() {
 
     try {
       await endpoints.tenants.update(movingOutTenant.id, payload);
-
-      // Free room status on room endpoint if supported
-      if (endpoints.rooms?.update && activeRoomId) {
-        try {
-          await endpoints.rooms.update(Number(activeRoomId), {
-            status: "AVAILABLE",
-          });
-        } catch {
-          // Fallback if room sync is handled on backend
-        }
-      }
-
       loadData();
       setMovingOutTenant(null);
     } catch (moveOutErr: unknown) {

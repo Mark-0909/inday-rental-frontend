@@ -13,10 +13,10 @@ export interface Tenant{
     id: number;
     fullName: string;
     phone: string;
-    room_id: string;
-    move_in_date: string;
-    move_out_date?: string | null;
-    billing_date: string;
+    roomId: string;
+    moveInDate: string;
+    moveOutDate?: string | null;
+    billingDate: string;
     status: 'ACTIVE' | 'INACTIVE';
     room: Room;
 }
@@ -34,10 +34,6 @@ export interface Billing {
   electricityRatePerKwh: number;
   electricityBill: number;
 
-  // Water Matrix
-  previousWaterReading: number;
-  currentWaterReading: number;
-  waterRatePerCubic: number;
   waterBill: number;
 
   // Summary Ledger
