@@ -11,9 +11,12 @@ export interface Room{
 
 export interface Tenant{
     id: number;
-    name: string;
-    contactNumber: string;
-    dateMovedIn: string;
+    fullName: string;
+    phone: string;
+    room_id: string;
+    move_in_date: string;
+    move_out_date?: string | null;
+    billing_date: string;
     status: 'ACTIVE' | 'INACTIVE';
     room: Room;
 }
