@@ -2,28 +2,28 @@
 
 import React, { FormEvent, useState } from "react";
 import { HouseIcon, LockKeyIcon, UserIcon } from "@phosphor-icons/react";
+import { loginAction } from "@/app/actions/auth";
 
 interface LoginViewProps {
-  onLoginSuccess: () => void;
+  onLoginSuccessAction: () => void;
 }
 
-export default function LoginView({ onLoginSuccess }: LoginViewProps) {
+export default function LoginView({ onLoginSuccessAction }: LoginViewProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError(null);
 
-    const validEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
-    const validPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
+    const result = await loginAction(email, password);
 
-    if (email.trim() === validEmail && password === validPassword) {
+    if (result.success) {
       sessionStorage.setItem("inday_admin_session", "authenticated");
-      onLoginSuccess();
+      onLoginSuccessAction();
     } else {
-      setError("Invalid admin email or password. Please try again.");
+      setError(result?.error || "Login failed");
     }
   };
 

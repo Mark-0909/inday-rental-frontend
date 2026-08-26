@@ -17,6 +17,7 @@ import {
 } from "@phosphor-icons/react";
 import { endpoints } from "@/api/clients";
 import { Billing, Room, Tenant } from "@/types";
+import { loginAction } from "@/app/actions/auth";
 
 function formatCurrency(amount: number) {
   return new Intl.NumberFormat("en-PH", {
@@ -106,18 +107,17 @@ export default function DashboardView({ onNavigate }: DashboardViewProps) {
       .finally(() => setLoading(false));
   }, [isAuthenticated]);
 
-  const handleLogin = (e: FormEvent) => {
+  const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
     setLoginError(null);
 
-    const validEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL;
-    const validPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
+    const result = await loginAction(email, password);
 
-    if (email.trim() === validEmail && password === validPassword) {
+    if (result.success) {
       sessionStorage.setItem("inday_admin_session", "authenticated");
       setIsAuthenticated(true);
     } else {
-      setLoginError("Invalid admin email or password. Please try again.");
+      setLoginError(result.error || "Invalid admin email or password. Please try again.");
     }
   };
 

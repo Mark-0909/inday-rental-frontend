@@ -24,7 +24,7 @@ export default function AppLayout() {
 
   // If not authenticated, render ONLY the login screen across the entire app
   if (!isAuthenticated) {
-    return <LoginView onLoginSuccess={() => setIsAuthenticated(true)} />;
+    return <LoginView onLoginSuccessAction={() => setIsAuthenticated(true)} />;
   }
 
   return (
