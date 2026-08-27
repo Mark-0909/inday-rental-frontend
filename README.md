@@ -1,36 +1,40 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Inday Rental (Frontend)
 
-## Getting Started
+A modern, intuitive web interface for the Inday Rental management system. Built to work alongside the Inday Rental Spring Boot Backend, this frontend application allows landlords to easily manage rooms, track tenants, and generate/monitor utility and rent bills.
 
-First, run the development server:
+## 📸 Screenshots
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+| Dashboard | Room Management |
+| :---: | :---: |
+| ![Dashboard Preview](<img width="1278" height="683" alt="Screenshot 2026-08-27 111556" src="https://github.com/user-attachments/assets/4b37f35a-baf9-498e-b5a2-f28ffb0f9059" />) | ![Rooms Preview](<img width="1278" height="683" alt="Screenshot 2026-08-27 111617" src="https://github.com/user-attachments/assets/56118eeb-e290-45d7-9ba3-11696c357788" />) |
+| *Overview of occupancy and pending payments.* | *Manage available and occupied rooms.* |
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+| Billing & Invoices | Tenant Management |
+| :---: | :---: |
+| ![Billing Preview](<img width="1277" height="683" alt="Screenshot 2026-08-27 111659" src="https://github.com/user-attachments/assets/9eb88c0d-c234-4d7e-a80c-37028d893dbe" />) | ![Tenants Preview](<img width="1277" height="677" alt="Screenshot 2026-08-27 111742" src="https://github.com/user-attachments/assets/acbdcec6-265e-4853-9892-4d7709e6921a" />) |
+| *Calculate electricity, water, and rent dynamically.* | *Track tenant details and move-in dates.* |
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ✨ Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Dashboard**: High-level overview of rental statistics and alerts.
+- **Dynamic Billing**: Calculates exact electricity bills using previous/current meter readings.
+- **Tenant Tracking**: Keep organized records of all occupants.
+- **Image Uploads**: Upload meter reading proofs securely to the cloud.
 
-## Learn More
+## 🛠️ Built With
 
-To learn more about Next.js, take a look at the following resources:
+- [Next.js](https://nextjs.org/) / React (or whatever framework you are using)
+- [TailwindCSS](https://tailwindcss.com/) (for styling)
+- TypeScript
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🚀 Getting Started
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Prerequisites
+Make sure you have [Node.js](https://nodejs.org/) installed on your machine.
 
-## Deploy on Vercel
+### Installation
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/yourusername/inday-rental-frontend.git
+   cd inday-rental-frontend
