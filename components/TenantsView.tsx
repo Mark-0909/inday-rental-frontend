@@ -326,7 +326,76 @@ export default function TenantsPage() {
             No tenants yet. Add your first tenant to get started.
           </p>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="overflow-hidden">
+            {/* Mobile Card Layout (< md screen width) */}
+            <div className="divide-y divide-[#dcd9d1] md:hidden">
+              {sortedTenants.map((tenant) => (
+                <div key={tenant.id} className="p-4 space-y-3 bg-[#f8f7f3]">
+                  <div className="flex justify-between items-start">
+                    <span className="font-semibold text-base text-[#202522]">{tenant.fullName}</span>
+                    <span
+                      className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide shrink-0 ${
+                        tenant.status === "ACTIVE"
+                          ? "bg-[#dcecdf] text-[#397052]"
+                          : "bg-[#eee4d6] text-[#94613a]"
+                      }`}
+                    >
+                      {tenant.status.toLowerCase()}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 rounded-md border border-[#e5e2da] bg-[#efede7]/60 p-2.5 text-xs">
+                    <div>
+                      <span className="text-[#858b84] block">Contact:</span>
+                      <span className="font-medium text-[#202522]">{tenant.phone}</span>
+                    </div>
+                    <div>
+                      <span className="text-[#858b84] block">Room:</span>
+                      <span className="font-medium text-[#202522]">
+                        {tenant.status === "ACTIVE"
+                          ? `Room ${
+                              tenant.room?.roomNumber ??
+                              rooms.find((r) => r.id === Number(tenant.roomId))?.roomNumber ??
+                              "-"
+                            }`
+                          : "Unassigned"}
+                      </span>
+                    </div>
+                    <div className="col-span-2">
+                      <span className="text-[#858b84] block">Billing Date:</span>
+                      <span className="font-medium text-[#202522]">{formatDate(tenant.billingDate)}</span>
+                    </div>
+                  </div>
+
+                  {/* Actions Toolbar for Mobile */}
+                  <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                    <button
+                      onClick={() => openViewTenant(tenant)}
+                      className="inline-flex flex-1 justify-center items-center gap-1 rounded-md border border-[#cbc7bc] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#202522] hover:border-[#202522]"
+                    >
+                      <EyeIcon size={14} /> View
+                    </button>
+                    <button
+                      onClick={() => openEditTenant(tenant)}
+                      className="inline-flex flex-1 justify-center items-center gap-1 rounded-md border border-[#cbc7bc] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#202522] hover:border-[#202522]"
+                    >
+                      <PencilSimpleIcon size={14} /> Edit
+                    </button>
+                    {tenant.status === "ACTIVE" && (
+                      <button
+                        onClick={() => openMoveOutModal(tenant)}
+                        className="inline-flex flex-1 justify-center items-center gap-1 rounded-md border border-[#e1b8ae] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#9d4937] hover:border-[#9d4937]"
+                      >
+                        <ArrowSquareOutIcon size={14} /> Move out
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop Table Layout (>= md screen width) */}
+            <div className="hidden md:block overflow-x-auto">
             <table className="min-w-full divide-y divide-[#dcd9d1] text-left">
               <thead className="bg-[#efede7] text-xs font-semibold uppercase tracking-[0.12em] text-[#707770]">
                 <tr>
@@ -392,6 +461,7 @@ export default function TenantsPage() {
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
         )}
       </section>
@@ -418,8 +488,12 @@ export default function TenantsPage() {
               Contact number
               <input
                 required
+                type="tel"
                 value={draft.phone}
-                onChange={(event) => updateDraft("phone", event.target.value)}
+                onChange={(event) => {
+                  const val = event.target.value.replace(/[^0-9+\-\s()]/g, "");
+                  updateDraft("phone", val);
+                }}
                 className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052]"
               />
             </label>

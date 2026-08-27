@@ -61,7 +61,8 @@ export default function ReceiptBillingModal({ billing, onClose }: ReceiptBilling
             </div>
             <h2 className="text-xs font-bold tracking-wider uppercase text-[#202522]">Inday Rental Properties</h2>
             <p className="text-[10px] text-[#707770]">Official Payment Voucher</p>
-            <div className="mt-1.5 inline-block rounded-full border border-[#b4d2be] bg-[#dcecdf] px-2.5 py-0.5 text-[9px] font-bold tracking-wider uppercase text-[#397052]">
+            <p className="text-[9px] text-[#858b84] mt-0.5">Sunny Brooke II, Brgy. San Francisco, General Trias, Cavite</p>
+            <div className="mt-2 inline-block rounded-full border border-[#b4d2be] bg-[#dcecdf] px-2.5 py-0.5 text-[9px] font-bold tracking-wider uppercase text-[#397052]">
               PAID IN FULL
             </div>
           </div>

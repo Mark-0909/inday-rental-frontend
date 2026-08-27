@@ -285,26 +285,26 @@ export default function BillingPage() {
               <table className="min-w-full divide-y divide-[#dcd9d1] text-left">
                 <thead className="bg-[#efede7] text-xs font-semibold uppercase tracking-[0.12em] text-[#707770]">
                   <tr>
-                    <th className="px-5 py-3 whitespace-nowrap">Tenant & Room</th>
-                    <th className="px-5 py-3 whitespace-nowrap">Due Date</th>
-                    <th className="px-5 py-3 whitespace-nowrap">Total Amount</th>
-                    <th className="px-5 py-3 whitespace-nowrap">Status</th>
-                    <th className="px-5 py-3 whitespace-nowrap text-right">Actions</th>
+                    <th className="px-5 py-3">Tenant & Room</th>
+                    <th className="px-5 py-3">Due Date</th>
+                    <th className="px-5 py-3">Total Amount</th>
+                    <th className="px-5 py-3">Status</th>
+                    <th className="px-5 py-3 text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#e5e2da] text-sm text-[#202522]">
                   {sortedBillings.map((bill) => (
                     <tr key={bill.id} className="bg-[#f8f7f3] transition-colors hover:bg-[#f3f0e8]/50">
-                      <td className="px-5 py-3.5 whitespace-nowrap">
+                      <td className="px-5 py-3.5">
                         <p className="font-semibold text-[#202522]">{bill.tenant?.fullName ?? "Unknown Tenant"}</p>
                         <p className="text-xs text-[#707770]">Room {bill.room?.roomNumber ?? "-"}</p>
                       </td>
-                      <td className="px-5 py-3.5 whitespace-nowrap text-[#5b625b]">
+                      <td className="px-5 py-3.5 text-[#5b625b]">
                         <p>{formatDate(bill.dueDate)}</p>
                         {bill.datePaid && <p className="text-[11px] text-[#397052]">Paid: {formatDate(bill.datePaid)}</p>}
                       </td>
-                      <td className="px-5 py-3.5 whitespace-nowrap font-bold text-[#202522]">{formatCurrency(bill.totalAmount)}</td>
-                      <td className="px-5 py-3.5 whitespace-nowrap">
+                      <td className="px-5 py-3.5 font-bold text-[#202522]">{formatCurrency(bill.totalAmount)}</td>
+                      <td className="px-5 py-3.5">
                         <span
                           className={`rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide ${
                             bill.status === "PAID"
@@ -317,7 +317,7 @@ export default function BillingPage() {
                           {bill.status.toLowerCase()}
                         </span>
                       </td>
-                      <td className="px-5 py-3.5 whitespace-nowrap">
+                      <td className="px-5 py-3.5">
                         <div className="flex justify-end gap-1.5 sm:gap-2">
                           <button
                             onClick={() => setViewingBilling(bill)}

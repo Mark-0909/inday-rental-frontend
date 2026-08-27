@@ -70,7 +70,7 @@ function RoomCard({ room, onEdit, onDelete }: { room: Room; onEdit: (room: Room)
             <div className="p-4 sm:p-5">
                 <div className="flex flex-wrap items-center gap-2.5"><h2 className="text-lg font-semibold text-[#202522]">Room {room.roomNumber}</h2><span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide ${room.status === "AVAILABLE" ? "bg-[#dcecdf] text-[#397052]" : room.status === "OCCUPIED" ? "bg-[#eee4d6] text-[#94613a]" : "bg-[#f3dcd6] text-[#9d4937]"}`}>{room.status.toLowerCase()}</span></div>
                 <p className="mt-2 text-sm text-[#707770]">₱{room.monthlyRent.toLocaleString()} / month · up to {room.maxOccupancy} {room.maxOccupancy === 1 ? "person" : "people"}</p>
-                {room.description && <p className="mt-1 text-sm text-[#858b84]">{room.description}</p>}
+                
                 <div className="mt-4 flex flex-col gap-2 sm:flex-row"><button onClick={() => onEdit(room)} className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-[#cbc7bc] px-3 py-2 text-sm font-semibold text-[#202522] hover:border-[#202522] sm:w-fit"><PencilSimpleIcon /> Edit</button><button onClick={() => onDelete(room)} className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-[#e1b8ae] px-3 py-2 text-sm font-semibold text-[#9d4937] hover:border-[#9d4937] sm:w-fit"><TrashIcon /> Delete</button></div>
             </div>
         </article>
