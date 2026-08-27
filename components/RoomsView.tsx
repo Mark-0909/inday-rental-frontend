@@ -1,11 +1,11 @@
 "use client";
 
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
-import { createPortal } from "react-dom";
 import { CaretLeftIcon, CaretRightIcon, FileImageIcon, PencilSimpleIcon, PlusIcon, TrashIcon, UploadSimpleIcon, XIcon } from "@phosphor-icons/react";
 import { Room } from "@/types";
 import { endpoints } from "@/api/clients";
 import { supabase } from "@/lib/supabase";
+import Modal from "@/components/ui/Modal";
 
 type RoomDraft = {
     roomNumber: string;
@@ -88,13 +88,6 @@ export default function RoomsPage() {
     const [removedImageUrls, setRemovedImageUrls] = useState<string[]>([]);
     const [deletingRoom, setDeletingRoom] = useState<Room | null>(null);
     const [deleting, setDeleting] = useState(false);
-
-    useEffect(() => {
-        if (editingId === null && deletingRoom === null) return;
-        const previousOverflow = document.body.style.overflow;
-        document.body.style.overflow = "hidden";
-        return () => { document.body.style.overflow = previousOverflow; };
-    }, [editingId, deletingRoom]);
 
     const loadRooms = () => {
         endpoints.rooms.getAll().then((response) => setRooms(response.data)).catch(() => setError("Could not load rooms. Check that the backend is running.")).finally(() => setLoading(false));
@@ -232,38 +225,56 @@ export default function RoomsPage() {
     return (
         <div className="mx-auto max-w-6xl space-y-6 md:space-y-8">
             <div className="flex flex-col justify-between gap-3 md:flex-row md:items-end md:gap-4">
-                <div><p className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#d96c52] md:mb-2 md:text-xs">Property inventory</p><h1 className="text-3xl font-semibold tracking-[-0.03em] text-[#202522]">Rooms</h1><p className="mt-1.5 text-sm leading-6 text-[#707770] md:mt-2">Keep room details, pricing, and availability up to date.</p></div>
-                <button onClick={openNewRoom} className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-[#d96c52] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#c55d45] md:w-fit"><PlusIcon weight="bold" /> Add room</button>
+                <div><p className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#397052] md:mb-2 md:text-xs">Property inventory</p><h1 className="text-3xl font-semibold tracking-[-0.03em] text-[#202522]">Rooms</h1><p className="mt-1.5 text-sm leading-6 text-[#707770] md:mt-2">Keep room details, pricing, and availability up to date.</p></div>
+                <button onClick={openNewRoom} className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-[#397052] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#2e5942] md:w-fit"><PlusIcon weight="bold" /> Add room</button>
             </div>
-            {error && <p role="alert" className="border-l-2 border-[#d96c52] bg-[#f8f7f3] px-4 py-3 text-sm text-[#9d4937]">{error}</p>}
-            {editingId !== null && typeof document !== "undefined" ? createPortal(<div className="fixed inset-0 z-50 flex h-dvh w-screen items-end justify-center bg-[#202522]/60 p-0 md:items-center md:p-6" role="presentation" onClick={closeEditor}>
-                <form onSubmit={saveRoom} role="dialog" aria-modal="true" aria-labelledby="room-editor-title" onClick={(event) => event.stopPropagation()} className="max-h-[92vh] w-full max-w-4xl overflow-y-auto border-t-2 border-[#202522] bg-[#f8f7f3] p-4 shadow-2xl md:p-6">
-                <div className="mb-5 flex items-center justify-between gap-4"><h2 id="room-editor-title" className="text-base font-semibold text-[#202522]">{editingId ? "Edit room" : "Add a room"}</h2><button type="button" onClick={closeEditor} aria-label="Close room editor" className="p-1 text-[#707770] hover:text-[#202522]"><XIcon size={20} /></button></div>
-                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                    <label className="text-sm font-medium text-[#202522]">Room number<input required value={draft.roomNumber} onChange={(event) => updateDraft("roomNumber", event.target.value)} className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#d96c52]" /></label>
-                    <label className="text-sm font-medium text-[#202522]">Status<select value={draft.status} onChange={(event) => updateDraft("status", event.target.value)} className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#d96c52]"><option value="AVAILABLE">Available</option><option value="OCCUPIED">Occupied</option><option value="MAINTENANCE">Maintenance</option></select></label>
-                    <label className="text-sm font-medium text-[#202522]">Monthly rent<input required min="0" type="number" value={draft.monthlyRent} onChange={(event) => updateDraft("monthlyRent", event.target.value)} className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#d96c52]" /></label>
-                    <label className="text-sm font-medium text-[#202522]">Max occupancy<input required min="1" type="number" value={draft.maxOccupancy} onChange={(event) => updateDraft("maxOccupancy", event.target.value)} className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#d96c52]" /></label>
-                    <div className="text-sm font-medium text-[#202522] md:col-span-2 lg:col-span-3">
-                        <span>Room photos</span>
-                        <label className="mt-2 flex cursor-pointer items-center justify-center gap-2 border border-dashed border-[#cbc7bc] bg-white px-4 py-5 text-sm font-semibold text-[#707770] transition-colors hover:border-[#d96c52] hover:text-[#d96c52]"><UploadSimpleIcon size={20} /><span>Choose photos</span><input type="file" accept="image/*" multiple onChange={addImages} className="sr-only" /></label>
-                        <p className="mt-2 text-xs font-normal text-[#858b84]">JPG, PNG, or WEBP · up to 5 MB each</p>
-                        {roomImages.length > 0 && <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">{roomImages.map((image, index) => <div key={image.id} className="group relative aspect-square overflow-hidden bg-[#dedbd2]"><img src={image.url} alt={`${image.saved ? "Saved" : "New"} room photo ${index + 1}`} className="h-full w-full object-cover" /><button type="button" onClick={() => removeImage(image.id)} aria-label={`Remove room photo ${index + 1}`} className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-[#202522]/80 text-white opacity-100 transition-opacity hover:bg-[#d96c52] sm:opacity-0 sm:group-hover:opacity-100"><XIcon size={16} weight="bold" /></button><span className="absolute inset-x-0 bottom-0 truncate bg-[#202522]/75 px-2 py-1 text-[10px] font-semibold text-white">{image.saved ? "Saved photo" : image.file?.name ?? "New photo"}</span></div>)}</div>}
-                        {roomImages.length === 0 && <div className="mt-3 flex items-center gap-2 text-xs font-normal text-[#9d4937]"><FileImageIcon />{editingId ? "No saved photos. Add at least one photo for the room." : "Add at least one photo for the room."}</div>}
+            {error && <p role="alert" className="border-l-2 border-[#9d4937] bg-[#f8f7f3] px-4 py-3 text-sm text-[#9d4937]">{error}</p>}
+            
+            <Modal
+                isOpen={editingId !== null}
+                onClose={closeEditor}
+                title={editingId ? "Edit room" : "Add a room"}
+                maxWidth="4xl"
+                className="p-4 md:p-6"
+            >
+                <form onSubmit={saveRoom} className="space-y-5">
+                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                        <label className="text-sm font-medium text-[#202522]">Room number<input required value={draft.roomNumber} onChange={(event) => updateDraft("roomNumber", event.target.value)} className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052]" /></label>
+                        <label className="text-sm font-medium text-[#202522]">Status<select value={draft.status} onChange={(event) => updateDraft("status", event.target.value)} className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052]"><option value="AVAILABLE">Available</option><option value="OCCUPIED">Occupied</option><option value="MAINTENANCE">Maintenance</option></select></label>
+                        <label className="text-sm font-medium text-[#202522]">Monthly rent<input required min="0" type="number" value={draft.monthlyRent} onChange={(event) => updateDraft("monthlyRent", event.target.value)} className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052]" /></label>
+                        <label className="text-sm font-medium text-[#202522]">Max occupancy<input required min="1" type="number" value={draft.maxOccupancy} onChange={(event) => updateDraft("maxOccupancy", event.target.value)} className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052]" /></label>
+                        <div className="text-sm font-medium text-[#202522] md:col-span-2 lg:col-span-3">
+                            <span>Room photos</span>
+                            <label className="mt-2 flex cursor-pointer items-center justify-center gap-2 border border-dashed border-[#cbc7bc] bg-white px-4 py-5 text-sm font-semibold text-[#707770] transition-colors hover:border-[#397052] hover:text-[#397052]"><UploadSimpleIcon size={20} /><span>Choose photos</span><input type="file" accept="image/*" multiple onChange={addImages} className="sr-only" /></label>
+                            <p className="mt-2 text-xs font-normal text-[#858b84]">JPG, PNG, or WEBP · up to 5 MB each</p>
+                            {roomImages.length > 0 && <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">{roomImages.map((image, index) => <div key={image.id} className="group relative aspect-square overflow-hidden bg-[#dedbd2]"><img src={image.url} alt={`${image.saved ? "Saved" : "New"} room photo ${index + 1}`} className="h-full w-full object-cover" /><button type="button" onClick={() => removeImage(image.id)} aria-label={`Remove room photo ${index + 1}`} className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-[#202522]/80 text-white opacity-100 transition-opacity hover:bg-[#397052] sm:opacity-0 sm:group-hover:opacity-100"><XIcon size={16} weight="bold" /></button><span className="absolute inset-x-0 bottom-0 truncate bg-[#202522]/75 px-2 py-1 text-[10px] font-semibold text-white">{image.saved ? "Saved photo" : image.file?.name ?? "New photo"}</span></div>)}</div>}
+                            {roomImages.length === 0 && <div className="mt-3 flex items-center gap-2 text-xs font-normal text-[#9d4937]"><FileImageIcon />{editingId ? "No saved photos. Add at least one photo for the room." : "Add at least one photo for the room."}</div>}
+                        </div>
+                        <label className="text-sm font-medium text-[#202522] md:col-span-2 lg:col-span-3">Description<textarea value={draft.description} onChange={(event) => updateDraft("description", event.target.value)} rows={3} className="mt-2 w-full resize-y rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052]" /></label>
                     </div>
-                    <label className="text-sm font-medium text-[#202522] md:col-span-2 lg:col-span-3">Description<textarea value={draft.description} onChange={(event) => updateDraft("description", event.target.value)} rows={3} className="mt-2 w-full resize-y rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#d96c52]" /></label>
-                </div>
-                <div className="mt-5 flex flex-col-reverse gap-2 md:flex-row md:justify-end"><button type="button" onClick={closeEditor} className="rounded-md px-4 py-2.5 text-sm font-semibold text-[#707770] hover:text-[#202522]">Cancel</button><button disabled={saving} className="rounded-md bg-[#202522] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50">{saving ? "Saving..." : editingId ? "Save changes" : "Create room"}</button></div>
+                    <div className="mt-5 flex flex-col-reverse gap-2 md:flex-row md:justify-end">
+                        <button type="button" onClick={closeEditor} className="rounded-md px-4 py-2.5 text-sm font-semibold text-[#707770] hover:text-[#202522]">Cancel</button>
+                        <button disabled={saving} className="rounded-md bg-[#202522] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50">{saving ? "Saving..." : editingId ? "Save changes" : "Create room"}</button>
+                    </div>
                 </form>
-            </div>, document.body) : null}
+            </Modal>
             <div className="grid gap-5 md:grid-cols-2">{rooms.length === 0 ? <p className="py-10 text-center text-sm text-[#707770] md:col-span-2">No rooms yet. Add your first room to get started.</p> : rooms.map((room) => <RoomCard key={room.id} room={room} onEdit={openEditRoom} onDelete={setDeletingRoom} />)}</div>
-            {deletingRoom && typeof document !== "undefined" ? createPortal(<div className="fixed inset-0 z-50 flex items-center justify-center bg-[#202522]/60 p-4" role="presentation" onClick={() => !deleting && setDeletingRoom(null)}>
-                <section role="alertdialog" aria-modal="true" aria-labelledby="delete-room-title" onClick={(event) => event.stopPropagation()} className="w-full max-w-md border-t-2 border-[#d96c52] bg-[#f8f7f3] p-5 shadow-2xl sm:p-7">
-                    <div className="flex items-start justify-between gap-4"><div><p className="text-xs font-bold uppercase tracking-[0.16em] text-[#d96c52]">Permanent action</p><h2 id="delete-room-title" className="mt-2 text-xl font-semibold text-[#202522]">Delete Room {deletingRoom.roomNumber}?</h2></div><button type="button" disabled={deleting} onClick={() => setDeletingRoom(null)} aria-label="Close delete confirmation" className="p-1 text-[#707770] hover:text-[#202522] disabled:opacity-50"><XIcon size={20} /></button></div>
-                    <p className="mt-4 text-sm leading-6 text-[#707770]">This removes the room from Aiven and deletes its linked photos from Supabase Storage. This action cannot be undone.</p>
-                    <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end"><button type="button" disabled={deleting} onClick={() => setDeletingRoom(null)} className="rounded-md px-4 py-2.5 text-sm font-semibold text-[#707770] hover:text-[#202522]">Cancel</button><button type="button" disabled={deleting} onClick={deleteRoom} className="inline-flex items-center justify-center gap-2 rounded-md bg-[#9d4937] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50"><TrashIcon /> {deleting ? "Deleting..." : "Delete room"}</button></div>
-                </section>
-            </div>, document.body) : null}
+            <Modal
+                isOpen={!!deletingRoom}
+                onClose={() => !deleting && setDeletingRoom(null)}
+                title={<div className="mb-2"><p className="text-xs font-bold uppercase tracking-[0.16em] text-[#397052]">Permanent action</p><h2 className="mt-1 text-xl font-semibold text-[#202522]">Delete Room {deletingRoom?.roomNumber}?</h2></div>}
+                maxWidth="md"
+                closeOnOutsideClick={!deleting}
+                hideCloseButton={deleting}
+            >
+                <div className="border-t-2 border-[#397052] -mx-4 md:-mx-6 -mt-8 pt-6 px-4 md:px-6">
+                    <p className="text-sm leading-6 text-[#707770]">This removes the room from Aiven and deletes its linked photos from Supabase Storage. This action cannot be undone.</p>
+                    <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+                        <button type="button" disabled={deleting} onClick={() => setDeletingRoom(null)} className="rounded-md px-4 py-2.5 text-sm font-semibold text-[#707770] hover:text-[#202522]">Cancel</button>
+                        <button type="button" disabled={deleting} onClick={deleteRoom} className="inline-flex items-center justify-center gap-2 rounded-md bg-[#9d4937] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50"><TrashIcon /> {deleting ? "Deleting..." : "Delete room"}</button>
+                    </div>
+                </div>
+            </Modal>
         </div>
     );
 }

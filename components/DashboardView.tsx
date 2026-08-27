@@ -40,14 +40,11 @@ function formatDate(value: string | null | undefined) {
 
 interface DashboardViewProps {
   onNavigate?: (view: "dashboard" | "rooms" | "tenants" | "billing") => void;
+  onLogout?: () => void;
 }
 
-export default function DashboardView({ onNavigate }: DashboardViewProps) {
+export default function DashboardView({ onNavigate, onLogout }: DashboardViewProps) {
   const [mounted, setMounted] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loginError, setLoginError] = useState<string | null>(null);
 
   // Property Data State
   const [rooms, setRooms] = useState<Room[]>([]);
@@ -60,10 +57,6 @@ export default function DashboardView({ onNavigate }: DashboardViewProps) {
   // Hydration protection & session check
   useEffect(() => {
     setMounted(true);
-    const session = sessionStorage.getItem("inday_admin_session");
-    if (session === "authenticated") {
-      setIsAuthenticated(true);
-    }
     setTodayFormatted(
       new Date().toLocaleDateString("en-PH", {
         weekday: "long",
@@ -74,23 +67,8 @@ export default function DashboardView({ onNavigate }: DashboardViewProps) {
     );
   }, []);
 
-  // Lock body scroll while login overlay is active
+  // Fetch metrics
   useEffect(() => {
-    if (!mounted) return;
-    if (!isAuthenticated) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [mounted, isAuthenticated]);
-
-  // Fetch metrics only when authenticated
-  useEffect(() => {
-    if (!isAuthenticated) return;
-
     Promise.all([
       endpoints.rooms.getAll(),
       endpoints.tenants.getAll(),
@@ -105,28 +83,7 @@ export default function DashboardView({ onNavigate }: DashboardViewProps) {
         setError("Could not load real-time property metrics from backend.");
       })
       .finally(() => setLoading(false));
-  }, [isAuthenticated]);
-
-  const handleLogin = async (e: FormEvent) => {
-    e.preventDefault();
-    setLoginError(null);
-
-    const result = await loginAction(email, password);
-
-    if (result.success) {
-      sessionStorage.setItem("inday_admin_session", "authenticated");
-      setIsAuthenticated(true);
-    } else {
-      setLoginError(result.error || "Invalid admin email or password. Please try again.");
-    }
-  };
-
-  const handleLogout = () => {
-    sessionStorage.removeItem("inday_admin_session");
-    setIsAuthenticated(false);
-    setEmail("");
-    setPassword("");
-  };
+  }, []);
 
   const activeTenants = useMemo(() => {
     return tenants.filter((t) => t.status?.toUpperCase() === "ACTIVE");
@@ -195,84 +152,6 @@ export default function DashboardView({ onNavigate }: DashboardViewProps) {
 
   return (
     <div className="relative mx-auto max-w-6xl space-y-8">
-      {/* Full-Screen Blocking Login Portal */}
-      {!isAuthenticated && typeof document !== "undefined"
-        ? createPortal(
-            <div className="fixed inset-0 z-9999 flex h-screen w-screen items-center justify-center bg-[#181d1a] px-4 py-8">
-              <div className="w-full max-w-md overflow-hidden rounded-xl border border-[#3b433e] bg-[#f8f7f3] p-7 shadow-2xl sm:p-9">
-                <div className="text-center">
-                  <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-[#dcecdf] text-[#397052]">
-                    <HouseIcon size={28} weight="fill" />
-                  </div>
-                  <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#d96c52]">
-                    Security Gate
-                  </p>
-                  <h1 className="mt-1 text-2xl font-bold tracking-tight text-[#202522]">
-                    Inday Rental Portal
-                  </h1>
-                  <p className="mt-1.5 text-xs text-[#707770]">
-                    Enter credentials to unlock property data and desk tools
-                  </p>
-                </div>
-
-                {loginError && (
-                  <div className="mt-5 border-l-2 border-[#d96c52] bg-[#fbeae5] px-3.5 py-2.5 text-xs text-[#9d4937]">
-                    {loginError}
-                  </div>
-                )}
-
-                <form onSubmit={handleLogin} className="mt-6 space-y-4">
-                  <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-[#707770]">
-                      Admin Email
-                    </label>
-                    <div className="relative mt-1.5 flex items-center">
-                      <span className="absolute left-3 text-[#858b84]">
-                        <UserIcon size={16} />
-                      </span>
-                      <input
-                        type="email"
-                        required
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="inday@rental.com"
-                        className="w-full rounded-md border border-[#dcd9d1] bg-white py-2.5 pl-9 pr-3 text-sm text-[#202522] outline-none transition focus:border-[#d96c52]"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold uppercase tracking-wider text-[#707770]">
-                      Password
-                    </label>
-                    <div className="relative mt-1.5 flex items-center">
-                      <span className="absolute left-3 text-[#858b84]">
-                        <LockKeyIcon size={16} />
-                      </span>
-                      <input
-                        type="password"
-                        required
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="••••••••"
-                        className="w-full rounded-md border border-[#dcd9d1] bg-white py-2.5 pl-9 pr-3 text-sm text-[#202522] outline-none transition focus:border-[#d96c52]"
-                      />
-                    </div>
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="mt-6 w-full rounded-md bg-[#202522] py-2.5 text-sm font-semibold text-white transition-colors hover:bg-black"
-                  >
-                    Unlock Dashboard
-                  </button>
-                </form>
-              </div>
-            </div>,
-            document.body
-          )
-        : null}
-
       {/* Main Dashboard Layout */}
       {loading ? (
         <div className="py-20 text-center text-sm text-[#707770]">
@@ -282,7 +161,7 @@ export default function DashboardView({ onNavigate }: DashboardViewProps) {
         <>
           <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
             <div>
-              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#d96c52]">
+              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#397052]">
                 {todayFormatted}
               </p>
               <h1 className="text-3xl font-semibold tracking-[-0.03em] text-[#202522]">
@@ -297,7 +176,7 @@ export default function DashboardView({ onNavigate }: DashboardViewProps) {
                 <>
                   <button
                     onClick={() => onNavigate("billing")}
-                    className="inline-flex items-center gap-1.5 rounded-md bg-[#d96c52] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#c55d45]"
+                    className="inline-flex items-center gap-1.5 rounded-md bg-[#397052] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#2e5942]"
                   >
                     <ReceiptIcon size={16} weight="bold" /> Manage Invoices
                   </button>
@@ -309,18 +188,20 @@ export default function DashboardView({ onNavigate }: DashboardViewProps) {
                   </button>
                 </>
               )}
-              <button
-                onClick={handleLogout}
-                className="inline-flex items-center gap-1 rounded-md border border-[#cbc7bc] bg-white px-3 py-2.5 text-xs font-medium text-[#707770] transition hover:border-[#202522] hover:text-[#202522]"
-                title="Lock session"
-              >
-                <SignOutIcon size={16} /> Logout
-              </button>
+              {onLogout && (
+                <button
+                  onClick={onLogout}
+                  className="inline-flex items-center gap-1 rounded-md border border-[#cbc7bc] bg-white px-3 py-2.5 text-xs font-medium text-[#707770] transition hover:border-[#202522] hover:text-[#202522]"
+                  title="Lock session"
+                >
+                  <SignOutIcon size={16} /> Logout
+                </button>
+              )}
             </div>
           </div>
 
           {error && (
-            <p role="alert" className="border-l-2 border-[#d96c52] bg-[#f8f7f3] px-4 py-3 text-sm text-[#9d4937]">
+            <p role="alert" className="border-l-2 border-[#9d4937] bg-[#f8f7f3] px-4 py-3 text-sm text-[#9d4937]">
               {error}
             </p>
           )}
@@ -357,12 +238,12 @@ export default function DashboardView({ onNavigate }: DashboardViewProps) {
             <div className="bg-[#f8f7f3] p-5">
               <div className="flex items-center justify-between">
                 <p className="text-xs font-medium uppercase tracking-wider text-[#858b84]">Outstanding Balances</p>
-                <WarningCircleIcon size={18} className="text-[#d96c52]" />
+                <WarningCircleIcon size={18} className="text-[#9d4937]" />
               </div>
               <p className="mt-3 text-3xl font-semibold tracking-tight text-[#202522]">
                 {financialStats.pendingCount + financialStats.overdueCount}
               </p>
-              <p className="mt-2 text-xs font-medium text-[#d96c52]">
+              <p className="mt-2 text-xs font-medium text-[#397052]">
                 {financialStats.overdueCount > 0
                   ? `${financialStats.overdueCount} overdue invoices need notice`
                   : `${financialStats.pendingCount} unpaid invoices pending settlement`}
@@ -381,7 +262,7 @@ export default function DashboardView({ onNavigate }: DashboardViewProps) {
                 {onNavigate && (
                   <button
                     onClick={() => onNavigate("billing")}
-                    className="inline-flex items-center gap-1 text-xs font-semibold text-[#d96c52] hover:underline"
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-[#397052] hover:underline"
                   >
                     View all <ArrowUpRightIcon size={12} weight="bold" />
                   </button>

@@ -34,7 +34,7 @@ export default function LoginView({ onLoginSuccessAction }: LoginViewProps) {
           <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-[#dcecdf] text-[#397052]">
             <HouseIcon size={24} weight="fill" />
           </div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#d96c52]">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#397052]">
             Admin Gate
           </p>
           <h1 className="mt-1 text-2xl font-bold tracking-tight text-[#202522]">
@@ -46,7 +46,7 @@ export default function LoginView({ onLoginSuccessAction }: LoginViewProps) {
         </div>
 
         {error && (
-          <div className="mt-5 border-l-2 border-[#d96c52] bg-[#fbeae5] px-3.5 py-2.5 text-xs text-[#9d4937]">
+          <div className="mt-5 border-l-2 border-[#9d4937] bg-[#fbeae5] px-3.5 py-2.5 text-xs text-[#9d4937]">
             {error}
           </div>
         )}
@@ -66,7 +66,7 @@ export default function LoginView({ onLoginSuccessAction }: LoginViewProps) {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="inday@rental.com"
-                className="w-full rounded-md border border-[#dcd9d1] bg-white py-2.5 pl-9 pr-3 text-sm text-[#202522] outline-none transition focus:border-[#d96c52]"
+                className="w-full rounded-md border border-[#dcd9d1] bg-white py-2.5 pl-9 pr-3 text-sm text-[#202522] outline-none transition focus:border-[#397052]"
               />
             </div>
           </div>
@@ -85,7 +85,7 @@ export default function LoginView({ onLoginSuccessAction }: LoginViewProps) {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full rounded-md border border-[#dcd9d1] bg-white py-2.5 pl-9 pr-3 text-sm text-[#202522] outline-none transition focus:border-[#d96c52]"
+                className="w-full rounded-md border border-[#dcd9d1] bg-white py-2.5 pl-9 pr-3 text-sm text-[#202522] outline-none transition focus:border-[#397052]"
               />
             </div>
           </div>
