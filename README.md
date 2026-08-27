@@ -6,12 +6,12 @@ A modern, intuitive web interface for the Inday Rental management system. Built 
 
 | Dashboard | Room Management |
 | :---: | :---: |
-| ![Dashboard Preview](<img width="1278" height="683" alt="Screenshot 2026-08-27 111556" src="https://github.com/user-attachments/assets/4b37f35a-baf9-498e-b5a2-f28ffb0f9059" />) | ![Rooms Preview](<img width="1278" height="683" alt="Screenshot 2026-08-27 111617" src="https://github.com/user-attachments/assets/56118eeb-e290-45d7-9ba3-11696c357788" />) |
+| ![Dashboard Preview](https://github.com/user-attachments/assets/4b37f35a-baf9-498e-b5a2-f28ffb0f9059) | ![Rooms Preview](https://github.com/user-attachments/assets/56118eeb-e290-45d7-9ba3-11696c357788) |
 | *Overview of occupancy and pending payments.* | *Manage available and occupied rooms.* |
 
 | Billing & Invoices | Tenant Management |
 | :---: | :---: |
-| ![Billing Preview](<img width="1277" height="683" alt="Screenshot 2026-08-27 111659" src="https://github.com/user-attachments/assets/9eb88c0d-c234-4d7e-a80c-37028d893dbe" />) | ![Tenants Preview](<img width="1277" height="677" alt="Screenshot 2026-08-27 111742" src="https://github.com/user-attachments/assets/acbdcec6-265e-4853-9892-4d7709e6921a" />) |
+| ![Billing Preview](https://github.com/user-attachments/assets/9eb88c0d-c234-4d7e-a80c-37028d893dbe) | ![Tenants Preview](https://github.com/user-attachments/assets/acbdcec6-265e-4853-9892-4d7709e6921a) |
 | *Calculate electricity, water, and rent dynamically.* | *Track tenant details and move-in dates.* |
 
 ## ✨ Features
@@ -23,8 +23,8 @@ A modern, intuitive web interface for the Inday Rental management system. Built 
 
 ## 🛠️ Built With
 
-- [Next.js](https://nextjs.org/) / React (or whatever framework you are using)
-- [TailwindCSS](https://tailwindcss.com/) (for styling)
+- [Next.js](https://nextjs.org/) / React 
+- [TailwindCSS](https://tailwindcss.com/)
 - TypeScript
 
 ## 🚀 Getting Started
