@@ -188,15 +188,6 @@ export default function DashboardView({ onNavigate, onLogout }: DashboardViewPro
                   </button>
                 </>
               )}
-              {onLogout && (
-                <button
-                  onClick={onLogout}
-                  className="inline-flex items-center gap-1 rounded-md border border-[#cbc7bc] bg-white px-3 py-2.5 text-xs font-medium text-[#707770] transition hover:border-[#202522] hover:text-[#202522]"
-                  title="Lock session"
-                >
-                  <SignOutIcon size={16} /> Logout
-                </button>
-              )}
             </div>
           </div>
 

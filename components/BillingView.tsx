@@ -8,6 +8,7 @@ import {
   PlusIcon,
   ReceiptIcon,
   TrashIcon,
+  MagnifyingGlassIcon,
 } from "@phosphor-icons/react";
 import { endpoints } from "@/api/clients";
 import { Billing, Room, Tenant } from "@/types";
@@ -52,6 +53,9 @@ export default function BillingPage() {
   const [settlingBilling, setSettlingBilling] = useState<Billing | null>(null);
   const [deletingBilling, setDeletingBilling] = useState<Billing | null>(null);
 
+  const [filter, setFilter] = useState<"ALL" | "PAID" | "UNPAID" | "OVERDUE">("ALL");
+  const [searchQuery, setSearchQuery] = useState("");
+
   const loadData = () => {
     Promise.all([
       endpoints.billing.getAll(),
@@ -91,12 +95,23 @@ export default function BillingPage() {
   };
 
   const sortedBillings = useMemo(() => {
-    return [...billings].sort((a, b) => {
-      if (a.status === b.status) return new Date(b.billingDate).getTime() - new Date(a.billingDate).getTime();
-      if (a.status === "UNPAID" || a.status === "OVERDUE") return -1;
-      return 1;
-    });
-  }, [billings]);
+    return [...billings]
+      .filter((b) => {
+        if (filter !== "ALL" && b.status !== filter) return false;
+        if (searchQuery) {
+          const query = searchQuery.toLowerCase();
+          const tenantMatch = b.tenant?.fullName?.toLowerCase().includes(query) ?? false;
+          const roomMatch = b.room?.roomNumber?.toLowerCase().includes(query) ?? false;
+          return tenantMatch || roomMatch;
+        }
+        return true;
+      })
+      .sort((a, b) => {
+        if (a.status === b.status) return new Date(b.billingDate).getTime() - new Date(a.billingDate).getTime();
+        if (a.status === "UNPAID" || a.status === "OVERDUE") return -1;
+        return 1;
+      });
+  }, [billings, filter, searchQuery]);
 
   if (loading) return <p className="text-sm text-[#707770]">Loading billing ledger...</p>;
 
@@ -186,6 +201,34 @@ export default function BillingPage() {
         >
           <PlusIcon weight="bold" /> Create Invoice
         </button>
+      </div>
+
+      {/* Filters and Search */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex gap-1 bg-[#e7e3d9] p-1 w-fit rounded-md">
+          {(["ALL", "UNPAID", "OVERDUE", "PAID"] as const).map((option) => (
+            <button
+              key={option}
+              type="button"
+              onClick={() => setFilter(option)}
+              className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${
+                filter === option ? "bg-[#fbfaf7] text-[#202522] shadow-sm" : "text-[#707770] hover:text-[#202522]"
+              }`}
+            >
+              {option === "ALL" ? "All Invoices" : option === "UNPAID" ? "Unpaid" : option === "OVERDUE" ? "Overdue" : "Paid"}
+            </button>
+          ))}
+        </div>
+        <div className="relative w-full sm:max-w-xs">
+          <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-[#858b84]" size={16} />
+          <input
+            type="text"
+            placeholder="Search tenant or room..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full rounded-md border border-[#dcd9d1] bg-white py-2 pl-9 pr-3 text-sm outline-none focus:border-[#397052]"
+          />
+        </div>
       </div>
 
       {error && (
