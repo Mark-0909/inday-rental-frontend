@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useRef, useCallback } from "react";
 import {
   CheckCircleIcon,
   EyeIcon,
@@ -56,26 +56,54 @@ export default function BillingPage() {
   const [filter, setFilter] = useState<"ALL" | "PAID" | "UNPAID" | "OVERDUE">("ALL");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const loadData = () => {
-    Promise.all([
-      endpoints.billing.getAll(),
-      endpoints.tenants.getAll(),
-      endpoints.rooms.getAll(),
-    ])
-      .then(([billingRes, tenantRes, roomRes]) => {
-        setBillings(billingRes.data);
-        setTenants(tenantRes.data);
-        setRooms(roomRes.data);
-      })
-      .catch(() => {
-        setError("Could not load billing records. Check that the backend is running.");
-      })
-      .finally(() => setLoading(false));
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+
+  const loadData = async (pageNumber: number = 0) => {
+    if (pageNumber === 0) setLoading(true);
+    else setLoadingMore(true);
+
+    try {
+      if (pageNumber === 0) {
+        const [billingRes, tenantRes, roomRes] = await Promise.all([
+          endpoints.billing.getAll(pageNumber, 10),
+          endpoints.tenants.getAll(0, 100),
+          endpoints.rooms.getAll(0, 100),
+        ]);
+        setBillings(billingRes.data.content);
+        setTenants(tenantRes.data.content);
+        setRooms(roomRes.data.content);
+        setHasMore(!billingRes.data.last);
+      } else {
+        const billingRes = await endpoints.billing.getAll(pageNumber, 10);
+        setBillings((current) => [...current, ...billingRes.data.content]);
+        setHasMore(!billingRes.data.last);
+      }
+      setPage(pageNumber);
+    } catch (err) {
+      setError("Could not load billing records. Check that the backend is running.");
+    } finally {
+      setLoading(false);
+      setLoadingMore(false);
+    }
   };
 
   useEffect(() => {
-    loadData();
+    loadData(0);
   }, []);
+
+  const observer = useRef<IntersectionObserver | null>(null);
+  const lastElementRef = useCallback((node: HTMLDivElement | null) => {
+      if (loading || loadingMore) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver(entries => {
+          if (entries[0].isIntersecting && hasMore) {
+              loadData(page + 1);
+          }
+      });
+      if (node) observer.current.observe(node);
+  }, [loading, loadingMore, hasMore, page]);
 
   const openNewBilling = () => {
     setError(null);
@@ -408,6 +436,12 @@ export default function BillingPage() {
             </div>
           </>
         )}
+        {loadingMore && (
+          <div className="py-4 flex justify-center items-center">
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#397052] border-t-transparent"></div>
+          </div>
+        )}
+        <div ref={lastElementRef} className="h-2 w-full" />
       </section>
 
       {/* Render the Reusable Modals */}

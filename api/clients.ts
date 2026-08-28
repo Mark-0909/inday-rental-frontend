@@ -9,19 +9,19 @@ const API = axios.create({
 
 export const endpoints = {
   rooms: {
-    getAll: () => API.get("/rooms"),
+    getAll: (page: number = 0, size: number = 10) => API.get("/rooms", { params: { page, size } }),
     create: (data: Record<string, unknown>) => API.post("/rooms", data),
     update: (id: number, data: Record<string, unknown>) => API.put(`/rooms/${id}`, data),
     remove: (id: number) => API.delete(`/rooms/${id}`),
   },
   tenants: {
-    getAll: () => API.get("/tenants"),
+    getAll: (page: number = 0, size: number = 10) => API.get("/tenants", { params: { page, size } }),
     register: (data: Record<string, unknown>) => API.post("/tenants", data),
     update: (id: number, data: Record<string, unknown>) => API.put(`/tenants/${id}`, data),
     remove: (id: number) => API.delete(`/tenants/${id}`),
   },
   billing: {
-    getAll: () => API.get("/billing"),
+    getAll: (page: number = 0, size: number = 10) => API.get("/billing", { params: { page, size } }),
     create: (data: Record<string, unknown>) => API.post("/billing", data),
     update: (id: number, data: Record<string, unknown>) => API.put(`/billing/${id}`, data),
     remove: (id: number) => API.delete(`/billing/${id}`),

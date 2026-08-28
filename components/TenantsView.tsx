@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FormEvent, useEffect, useMemo, useState } from "react";
+import React, { FormEvent, useEffect, useMemo, useState, useRef, useCallback } from "react";
 import {
   ArrowSquareOutIcon,
   CheckCircleIcon,
@@ -96,21 +96,52 @@ export default function TenantsPage() {
   const [settlingBilling, setSettlingBilling] = useState<Billing | null>(null);
   const [deletingBilling, setDeletingBilling] = useState<Billing | null>(null);
 
-  const loadData = () => {
-    Promise.all([endpoints.tenants.getAll(), endpoints.rooms.getAll()])
-      .then(([tenantResponse, roomResponse]) => {
-        setTenants(tenantResponse.data);
-        setRooms(roomResponse.data);
-      })
-      .catch(() => {
-        setError("Could not load tenants. Check that the backend is running.");
-      })
-      .finally(() => setLoading(false));
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+
+  const loadData = async (pageNumber: number = 0) => {
+    if (pageNumber === 0) setLoading(true);
+    else setLoadingMore(true);
+
+    try {
+      if (pageNumber === 0) {
+        const [tenantResponse, roomResponse] = await Promise.all([
+          endpoints.tenants.getAll(pageNumber, 10),
+          endpoints.rooms.getAll(0, 100)
+        ]);
+        setTenants(tenantResponse.data.content);
+        setRooms(roomResponse.data.content);
+        setHasMore(!tenantResponse.data.last);
+      } else {
+        const tenantResponse = await endpoints.tenants.getAll(pageNumber, 10);
+        setTenants((current) => [...current, ...tenantResponse.data.content]);
+        setHasMore(!tenantResponse.data.last);
+      }
+      setPage(pageNumber);
+    } catch (err) {
+      setError("Could not load tenants. Check that the backend is running.");
+    } finally {
+      setLoading(false);
+      setLoadingMore(false);
+    }
   };
 
   useEffect(() => {
-    loadData();
+    loadData(0);
   }, []);
+
+  const observer = useRef<IntersectionObserver | null>(null);
+  const lastElementRef = useCallback((node: HTMLDivElement | null) => {
+      if (loading || loadingMore) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver(entries => {
+          if (entries[0].isIntersecting && hasMore) {
+              loadData(page + 1);
+          }
+      });
+      if (node) observer.current.observe(node);
+  }, [loading, loadingMore, hasMore, page]);
 
   const editingTenant = useMemo(
     () => tenants.find((tenant) => tenant.id === editingId) ?? null,
@@ -464,6 +495,12 @@ export default function TenantsPage() {
             </div>
           </div>
         )}
+        {loadingMore && (
+          <div className="py-4 flex justify-center items-center">
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#397052] border-t-transparent"></div>
+          </div>
+        )}
+        <div ref={lastElementRef} className="h-2 w-full" />
       </section>
 
       <Modal

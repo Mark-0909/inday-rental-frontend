@@ -1,6 +1,6 @@
 "use client";
 
-import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, FormEvent, useEffect, useState, useRef, useCallback } from "react";
 import { CaretLeftIcon, CaretRightIcon, FileImageIcon, PencilSimpleIcon, PlusIcon, TrashIcon, UploadSimpleIcon, XIcon } from "@phosphor-icons/react";
 import { Room } from "@/types";
 import { endpoints } from "@/api/clients";
@@ -89,11 +89,45 @@ export default function RoomsPage() {
     const [deletingRoom, setDeletingRoom] = useState<Room | null>(null);
     const [deleting, setDeleting] = useState(false);
 
-    const loadRooms = () => {
-        endpoints.rooms.getAll().then((response) => setRooms(response.data)).catch(() => setError("Could not load rooms. Check that the backend is running.")).finally(() => setLoading(false));
+    const [page, setPage] = useState(0);
+    const [hasMore, setHasMore] = useState(true);
+    const [loadingMore, setLoadingMore] = useState(false);
+
+    const loadRooms = async (pageNumber: number = 0) => {
+        if (pageNumber === 0) setLoading(true);
+        else setLoadingMore(true);
+
+        try {
+            const response = await endpoints.rooms.getAll(pageNumber, 10);
+            const newRooms = response.data.content;
+            if (pageNumber === 0) {
+                setRooms(newRooms);
+            } else {
+                setRooms((current) => [...current, ...newRooms]);
+            }
+            setHasMore(!response.data.last);
+            setPage(pageNumber);
+        } catch (err) {
+            setError("Could not load rooms. Check that the backend is running.");
+        } finally {
+            setLoading(false);
+            setLoadingMore(false);
+        }
     };
 
-    useEffect(() => { loadRooms(); }, []);
+    useEffect(() => { loadRooms(0); }, []);
+
+    const observer = useRef<IntersectionObserver | null>(null);
+    const lastElementRef = useCallback((node: HTMLDivElement | null) => {
+        if (loading || loadingMore) return;
+        if (observer.current) observer.current.disconnect();
+        observer.current = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting && hasMore) {
+                loadRooms(page + 1);
+            }
+        });
+        if (node) observer.current.observe(node);
+    }, [loading, loadingMore, hasMore, page]);
 
     const closeEditor = () => {
         roomImages.forEach((image) => { if (image.file) URL.revokeObjectURL(image.url); });
@@ -258,7 +292,19 @@ export default function RoomsPage() {
                     </div>
                 </form>
             </Modal>
-            <div className="grid gap-5 md:grid-cols-2">{rooms.length === 0 ? <p className="py-10 text-center text-sm text-[#707770] md:col-span-2">No rooms yet. Add your first room to get started.</p> : rooms.map((room) => <RoomCard key={room.id} room={room} onEdit={openEditRoom} onDelete={setDeletingRoom} />)}</div>
+            <div className="grid gap-5 md:grid-cols-2">
+                {rooms.length === 0 && !loading ? (
+                    <p className="py-10 text-center text-sm text-[#707770] md:col-span-2">No rooms yet. Add your first room to get started.</p>
+                ) : (
+                    rooms.map((room) => <RoomCard key={room.id} room={room} onEdit={openEditRoom} onDelete={setDeletingRoom} />)
+                )}
+                {loadingMore && (
+                    <div className="md:col-span-2 py-4 flex justify-center items-center">
+                        <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#397052] border-t-transparent"></div>
+                    </div>
+                )}
+            </div>
+            <div ref={lastElementRef} className="h-2 w-full" />
             <Modal
                 isOpen={!!deletingRoom}
                 onClose={() => !deleting && setDeletingRoom(null)}

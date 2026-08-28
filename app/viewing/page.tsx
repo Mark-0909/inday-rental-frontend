@@ -63,7 +63,7 @@ export default function ViewingPage() {
     const [detailImage, setDetailImage] = useState(0);
 
     useEffect(() => {
-        endpoints.rooms.getAll().then((response) => setRooms(response.data)).catch(() => setError(true)).finally(() => setLoading(false));
+        endpoints.rooms.getAll(0, 100).then((response) => setRooms(response.data.content)).catch(() => setError(true)).finally(() => setLoading(false));
     }, []);
 
     const visibleRooms = rooms.filter((room) => filter === "ALL" || room.status === filter);

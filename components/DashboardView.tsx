@@ -70,14 +70,14 @@ export default function DashboardView({ onNavigate, onLogout }: DashboardViewPro
   // Fetch metrics
   useEffect(() => {
     Promise.all([
-      endpoints.rooms.getAll(),
-      endpoints.tenants.getAll(),
-      endpoints.billing.getAll(),
+      endpoints.rooms.getAll(0, 100),
+      endpoints.tenants.getAll(0, 100),
+      endpoints.billing.getAll(0, 100),
     ])
       .then(([roomRes, tenantRes, billingRes]) => {
-        setRooms(roomRes.data);
-        setTenants(tenantRes.data);
-        setBillings(billingRes.data);
+        setRooms(roomRes.data.content);
+        setTenants(tenantRes.data.content);
+        setBillings(billingRes.data.content);
       })
       .catch(() => {
         setError("Could not load real-time property metrics from backend.");
