@@ -63,6 +63,15 @@ export default function ViewingPage() {
     const [detailImage, setDetailImage] = useState(0);
 
     useEffect(() => {
+        if (selectedRoom) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "";
+        }
+        return () => { document.body.style.overflow = ""; };
+    }, [selectedRoom]);
+
+    useEffect(() => {
         endpoints.rooms.getAll(0, 100).then((response) => setRooms(response.data.content)).catch(() => setError(true)).finally(() => setLoading(false));
     }, []);
 
