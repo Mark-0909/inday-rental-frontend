@@ -66,8 +66,8 @@ export default function SettleBillingModal({ billing, onClose, onSuccess }: Sett
       onClose={() => !processing && onClose()}
       title={
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#397052]">Payment Processing</p>
-          <h2 className="mt-2 text-xl font-semibold text-[#202522]">
+          <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#397052] dark:text-[#55a278]">Payment Processing</p>
+          <h2 className="mt-2 text-xl font-semibold text-[#202522] dark:text-gray-100">
             Settle {billing ? formatCurrency(billing.totalAmount) : ""}?
           </h2>
         </div>
@@ -75,12 +75,12 @@ export default function SettleBillingModal({ billing, onClose, onSuccess }: Sett
       maxWidth="md"
       closeOnOutsideClick={!processing}
       hideCloseButton={processing}
-      className="p-5 sm:p-7 border-t-[#397052]"
+      className="p-5 sm:p-7 border-t-[#397052] dark:border-t-[#55a278]"
     >
       {billing && (
         <>
-          <p className="text-sm leading-6 text-[#707770]">
-            Record settlement for <strong>{billing.tenant?.fullName}</strong>.
+          <p className="text-sm leading-6 text-[#707770] dark:text-gray-300">
+            Record settlement for <strong className="dark:text-gray-100">{billing.tenant?.fullName}</strong>.
           </p>
 
           {error && (
@@ -90,14 +90,14 @@ export default function SettleBillingModal({ billing, onClose, onSuccess }: Sett
           )}
 
           <div className="mt-4">
-            <label className="block text-sm font-medium text-[#202522]">
+            <label className="block text-sm font-medium text-[#202522] dark:text-gray-200">
               Payment Date
               <input
                 type="date"
                 required
                 value={settleDate}
                 onChange={(e) => setSettleDate(e.target.value)}
-                className="mt-1.5 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2 text-sm outline-none focus:border-[#397052]"
+                className="mt-1.5 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2 text-sm outline-none focus:border-[#397052] dark:border-white/10 dark:bg-[#1a1a1a] dark:text-white dark:focus:border-[#55a278]"
               />
             </label>
           </div>
@@ -107,7 +107,7 @@ export default function SettleBillingModal({ billing, onClose, onSuccess }: Sett
               type="button"
               disabled={processing}
               onClick={onClose}
-              className="rounded-md px-4 py-2.5 text-sm font-semibold text-[#707770] hover:text-[#202522]"
+              className="rounded-md px-4 py-2.5 text-sm font-semibold text-[#707770] hover:text-[#202522] dark:text-gray-400 dark:hover:text-white"
             >
               Cancel
             </button>

@@ -154,20 +154,20 @@ export default function DashboardView({ onNavigate, onLogout }: DashboardViewPro
     <div className="relative mx-auto max-w-6xl space-y-8">
       {/* Main Dashboard Layout */}
       {loading ? (
-        <div className="py-20 text-center text-sm text-[#707770]">
+        <div className="py-20 text-center text-sm text-[#707770] dark:text-gray-400">
           Loading property overview...
         </div>
       ) : (
         <>
           <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
             <div>
-              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#397052]">
+              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#397052] dark:text-[#55a278]">
                 {todayFormatted}
               </p>
-              <h1 className="text-3xl font-semibold tracking-[-0.03em] text-[#202522]">
+              <h1 className="text-3xl font-semibold tracking-[-0.03em] text-[#202522] dark:text-gray-100">
                 Property Overview
               </h1>
-              <p className="mt-1.5 max-w-lg text-sm leading-6 text-[#707770]">
+              <p className="mt-1.5 max-w-lg text-sm leading-6 text-[#707770] dark:text-gray-400">
                 Live operational status across units, active tenancies, and revenue stream.
               </p>
             </div>
@@ -176,13 +176,13 @@ export default function DashboardView({ onNavigate, onLogout }: DashboardViewPro
                 <>
                   <button
                     onClick={() => onNavigate("billing")}
-                    className="inline-flex items-center gap-1.5 rounded-md bg-[#397052] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#2e5942]"
+                    className="inline-flex items-center gap-1.5 rounded-md bg-[#397052] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#2e5942] dark:bg-[#4d8a68] dark:hover:bg-[#397052]"
                   >
                     <ReceiptIcon size={16} weight="bold" /> Manage Invoices
                   </button>
                   <button
                     onClick={() => onNavigate("tenants")}
-                    className="inline-flex items-center gap-1.5 rounded-md border border-[#cbc7bc] bg-white px-4 py-2.5 text-sm font-semibold text-[#202522] transition-colors hover:border-[#202522]"
+                    className="inline-flex items-center gap-1.5 rounded-md border border-[#cbc7bc] bg-white px-4 py-2.5 text-sm font-semibold text-[#202522] transition-colors hover:border-[#202522] dark:border-white/10 dark:bg-white/5 dark:text-gray-200 dark:hover:bg-white/10 dark:hover:border-white/30"
                   >
                     <UsersIcon size={16} weight="bold" /> Residents
                   </button>
@@ -192,49 +192,49 @@ export default function DashboardView({ onNavigate, onLogout }: DashboardViewPro
           </div>
 
           {error && (
-            <p role="alert" className="border-l-2 border-[#9d4937] bg-[#f8f7f3] px-4 py-3 text-sm text-[#9d4937]">
+            <p role="alert" className="border-l-2 border-[#9d4937] bg-[#f8f7f3] px-4 py-3 text-sm text-[#9d4937] dark:bg-[#9d4937]/10 dark:border-[#e1684e] dark:text-[#e1684e]">
               {error}
             </p>
           )}
 
           {/* Primary KPI Matrix */}
-          <div className="grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-[#dcd9d1] bg-[#dcd9d1] sm:grid-cols-3">
-            <div className="bg-[#f8f7f3] p-5">
+          <div className="grid grid-cols-1 gap-px overflow-hidden rounded-lg border border-[#dcd9d1] bg-[#dcd9d1] sm:grid-cols-3 dark:border-white/10 dark:bg-white/10">
+            <div className="bg-[#f8f7f3] p-5 dark:bg-[#1e1e1e]">
               <div className="flex items-center justify-between">
-                <p className="text-xs font-medium uppercase tracking-wider text-[#858b84]">Occupancy</p>
-                <DoorIcon size={18} className="text-[#858b84]" />
+                <p className="text-xs font-medium uppercase tracking-wider text-[#858b84] dark:text-gray-400">Occupancy</p>
+                <DoorIcon size={18} className="text-[#858b84] dark:text-gray-400" />
               </div>
-              <p className="mt-3 text-3xl font-semibold tracking-tight text-[#202522]">
+              <p className="mt-3 text-3xl font-semibold tracking-tight text-[#202522] dark:text-gray-100">
                 {occupiedRoomsCount}{" "}
-                <span className="text-base font-normal text-[#858b84]">/ {totalRooms} rooms</span>
+                <span className="text-base font-normal text-[#858b84] dark:text-gray-400">/ {totalRooms} rooms</span>
               </p>
-              <p className="mt-2 text-xs font-medium text-[#4d8a68]">
+              <p className="mt-2 text-xs font-medium text-[#4d8a68] dark:text-[#55a278]">
                 {occupancyRate}% occupancy ({totalRooms - occupiedRoomsCount} available)
               </p>
             </div>
 
-            <div className="bg-[#f8f7f3] p-5">
+            <div className="bg-[#f8f7f3] p-5 dark:bg-[#1e1e1e]">
               <div className="flex items-center justify-between">
-                <p className="text-xs font-medium uppercase tracking-wider text-[#858b84]">Collected Revenue</p>
-                <CheckCircleIcon size={18} className="text-[#4d8a68]" />
+                <p className="text-xs font-medium uppercase tracking-wider text-[#858b84] dark:text-gray-400">Collected Revenue</p>
+                <CheckCircleIcon size={18} className="text-[#4d8a68] dark:text-[#55a278]" />
               </div>
-              <p className="mt-3 text-3xl font-semibold tracking-tight text-[#202522]">
+              <p className="mt-3 text-3xl font-semibold tracking-tight text-[#202522] dark:text-gray-100">
                 {formatCurrency(financialStats.totalCollected)}
               </p>
-              <p className="mt-2 text-xs font-medium text-[#858b84]">
+              <p className="mt-2 text-xs font-medium text-[#858b84] dark:text-gray-400">
                 of {formatCurrency(financialStats.totalExpected)} total billed
               </p>
             </div>
 
-            <div className="bg-[#f8f7f3] p-5">
+            <div className="bg-[#f8f7f3] p-5 dark:bg-[#1e1e1e]">
               <div className="flex items-center justify-between">
-                <p className="text-xs font-medium uppercase tracking-wider text-[#858b84]">Outstanding Balances</p>
-                <WarningCircleIcon size={18} className="text-[#9d4937]" />
+                <p className="text-xs font-medium uppercase tracking-wider text-[#858b84] dark:text-gray-400">Outstanding Balances</p>
+                <WarningCircleIcon size={18} className="text-[#9d4937] dark:text-[#e1684e]" />
               </div>
-              <p className="mt-3 text-3xl font-semibold tracking-tight text-[#202522]">
+              <p className="mt-3 text-3xl font-semibold tracking-tight text-[#202522] dark:text-gray-100">
                 {financialStats.pendingCount + financialStats.overdueCount}
               </p>
-              <p className="mt-2 text-xs font-medium text-[#397052]">
+              <p className="mt-2 text-xs font-medium text-[#397052] dark:text-[#55a278]">
                 {financialStats.overdueCount > 0
                   ? `${financialStats.overdueCount} overdue invoices need notice`
                   : `${financialStats.pendingCount} unpaid invoices pending settlement`}
@@ -244,16 +244,16 @@ export default function DashboardView({ onNavigate, onLogout }: DashboardViewPro
 
           {/* Operational Sections */}
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1.35fr_0.65fr]">
-            <section className="border-t-2 border-[#202522] pt-4">
+            <section className="border-t-2 border-[#202522] pt-4 dark:border-white/20">
               <div className="mb-4 flex items-center justify-between">
                 <div>
-                  <h2 className="text-base font-semibold text-[#202522]">Unsettled Invoices</h2>
-                  <p className="text-xs text-[#858b84]">Pending payments requiring collection</p>
+                  <h2 className="text-base font-semibold text-[#202522] dark:text-gray-100">Unsettled Invoices</h2>
+                  <p className="text-xs text-[#858b84] dark:text-gray-400">Pending payments requiring collection</p>
                 </div>
                 {onNavigate && (
                   <button
                     onClick={() => onNavigate("billing")}
-                    className="inline-flex items-center gap-1 text-xs font-semibold text-[#397052] hover:underline"
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-[#397052] hover:underline dark:text-[#55a278]"
                   >
                     View all <ArrowUpRightIcon size={12} weight="bold" />
                   </button>
@@ -261,31 +261,31 @@ export default function DashboardView({ onNavigate, onLogout }: DashboardViewPro
               </div>
 
               {pendingInvoices.length === 0 ? (
-                <div className="rounded-md border border-[#dcd9d1] bg-[#f8f7f3] py-8 text-center text-xs text-[#707770]">
+                <div className="rounded-md border border-[#dcd9d1] bg-[#f8f7f3] py-8 text-center text-xs text-[#707770] dark:border-white/10 dark:bg-[#1e1e1e] dark:text-gray-400">
                   All tenant invoices are settled. No pending balances.
                 </div>
               ) : (
-                <div className="divide-y divide-[#dcd9d1] border-y border-[#dcd9d1] text-sm">
+                <div className="divide-y divide-[#dcd9d1] border-y border-[#dcd9d1] text-sm dark:divide-white/10 dark:border-white/10">
                   {pendingInvoices.map((inv) => (
                     <div
                       key={inv.id}
                       className="flex flex-wrap items-center justify-between gap-3 py-3.5"
                     >
                       <div>
-                        <p className="font-semibold text-[#202522]">
+                        <p className="font-semibold text-[#202522] dark:text-gray-100">
                           {inv.tenant?.fullName ?? "Resident"}
                         </p>
-                        <p className="mt-0.5 text-xs text-[#858b84]">
+                        <p className="mt-0.5 text-xs text-[#858b84] dark:text-gray-400">
                           Room {inv.room?.roomNumber ?? "-"} · Billed {formatDate(inv.billingDate)}
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className="font-bold text-[#202522]">{formatCurrency(inv.totalAmount)}</p>
+                        <p className="font-bold text-[#202522] dark:text-gray-100">{formatCurrency(inv.totalAmount)}</p>
                         <span
                           className={`inline-block mt-0.5 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
                             inv.status === "OVERDUE"
-                              ? "bg-[#fbeae5] text-[#9d4937]"
-                              : "bg-[#eee4d6] text-[#94613a]"
+                              ? "bg-[#fbeae5] text-[#9d4937] dark:bg-[#9d4937]/20 dark:text-[#e1684e]"
+                              : "bg-[#eee4d6] text-[#94613a] dark:bg-[#94613a]/20 dark:text-[#d39c71]"
                           }`}
                         >
                           Due {formatDate(inv.dueDate)}
@@ -297,38 +297,38 @@ export default function DashboardView({ onNavigate, onLogout }: DashboardViewPro
               )}
             </section>
 
-            <section className="flex flex-col justify-between rounded-lg bg-[#e7e3d9] p-6">
+            <section className="flex flex-col justify-between rounded-lg bg-[#e7e3d9] p-6 dark:bg-[#1e1e1e]">
               <div>
                 <div className="flex items-center justify-between">
-                  <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[#858b84]">
+                  <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[#858b84] dark:text-gray-400">
                     Collection Progress
                   </p>
-                  <CalendarCheckIcon size={18} className="text-[#397052]" />
+                  <CalendarCheckIcon size={18} className="text-[#397052] dark:text-[#55a278]" />
                 </div>
-                <p className="mt-5 text-4xl font-semibold tracking-tight text-[#202522]">
+                <p className="mt-5 text-4xl font-semibold tracking-tight text-[#202522] dark:text-gray-100">
                   {financialStats.collectionRate}%
                 </p>
-                <div className="mt-4 h-2.5 overflow-hidden rounded-full bg-[#cbc7bc]">
+                <div className="mt-4 h-2.5 overflow-hidden rounded-full bg-[#cbc7bc] dark:bg-white/10">
                   <div
-                    className="h-full rounded-full bg-[#397052] transition-all duration-500"
+                    className="h-full rounded-full bg-[#397052] transition-all duration-500 dark:bg-[#55a278]"
                     style={{ width: `${Math.min(100, financialStats.collectionRate)}%` }}
                   />
                 </div>
-                <p className="mt-4 text-xs leading-relaxed text-[#707770]">
+                <p className="mt-4 text-xs leading-relaxed text-[#707770] dark:text-gray-400">
                   {financialStats.collectionRate >= 80
                     ? "Collection rate is healthy. Most residents have cleared utility and rent dues."
                     : "Collection is below target. Issue reminders for overdue meter and rental invoices."}
                 </p>
               </div>
 
-              <div className="mt-6 border-t border-[#dcd9d1] pt-4 text-xs space-y-1.5 text-[#5b625b]">
+              <div className="mt-6 border-t border-[#dcd9d1] pt-4 text-xs space-y-1.5 text-[#5b625b] dark:border-white/10 dark:text-gray-400">
                 <div className="flex justify-between">
                   <span>Active Residents:</span>
-                  <span className="font-semibold text-[#202522]">{activeTenants.length}</span>
+                  <span className="font-semibold text-[#202522] dark:text-gray-100">{activeTenants.length}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Available Units:</span>
-                  <span className="font-semibold text-[#202522]">
+                  <span className="font-semibold text-[#202522] dark:text-gray-100">
                     {totalRooms - occupiedRoomsCount}
                   </span>
                 </div>

@@ -56,7 +56,7 @@ function RoomCard({ room, onEdit, onDelete }: { room: Room; onEdit: (room: Room)
     const moveImage = (direction: number) => setActiveImage((current) => (current + direction + slideshowImages.length) % slideshowImages.length);
 
     return (
-        <article className="overflow-hidden border border-[#dcd9d1] bg-[#f8f7f3]">
+        <article className="overflow-hidden border border-[#dcd9d1] bg-[#f8f7f3] dark:border-white/10 dark:bg-[#1e1e1e]">
             <div className="group relative aspect-video overflow-hidden bg-[#dedbd2]">
                 <div className="absolute inset-0 bg-cover bg-center transition-[background-image] duration-500" style={{ backgroundImage: `url("${slideshowImages[activeImage]}")` }} role="img" aria-label={`Photo of room ${room.roomNumber}`} />
                 <div className="absolute inset-x-0 bottom-0 h-20 bg-linear-to-t from-black/45 to-transparent" />
@@ -68,10 +68,10 @@ function RoomCard({ room, onEdit, onDelete }: { room: Room; onEdit: (room: Room)
                 </>}
             </div>
             <div className="p-4 sm:p-5">
-                <div className="flex flex-wrap items-center gap-2.5"><h2 className="text-lg font-semibold text-[#202522]">Room {room.roomNumber}</h2><span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide ${room.status === "AVAILABLE" ? "bg-[#dcecdf] text-[#397052]" : room.status === "OCCUPIED" ? "bg-[#eee4d6] text-[#94613a]" : "bg-[#f3dcd6] text-[#9d4937]"}`}>{room.status.toLowerCase()}</span></div>
-                <p className="mt-2 text-sm text-[#707770]">₱{room.monthlyRent.toLocaleString()} / month · up to {room.maxOccupancy} {room.maxOccupancy === 1 ? "person" : "people"}</p>
+                <div className="flex flex-wrap items-center gap-2.5"><h2 className="text-lg font-semibold text-[#202522] dark:text-gray-100">Room {room.roomNumber}</h2><span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide ${room.status === "AVAILABLE" ? "bg-[#dcecdf] text-[#397052] dark:bg-[#397052]/20 dark:text-[#55a278]" : room.status === "OCCUPIED" ? "bg-[#eee4d6] text-[#94613a] dark:bg-[#94613a]/20 dark:text-[#d39c71]" : "bg-[#f3dcd6] text-[#9d4937] dark:bg-[#9d4937]/20 dark:text-[#e1684e]"}`}>{room.status.toLowerCase()}</span></div>
+                <p className="mt-2 text-sm text-[#707770] dark:text-gray-400">₱{room.monthlyRent.toLocaleString()} / month · up to {room.maxOccupancy} {room.maxOccupancy === 1 ? "person" : "people"}</p>
                 
-                <div className="mt-4 flex flex-col gap-2 sm:flex-row"><button onClick={() => onEdit(room)} className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-[#cbc7bc] px-3 py-2 text-sm font-semibold text-[#202522] hover:border-[#202522] sm:w-fit"><PencilSimpleIcon /> Edit</button><button onClick={() => onDelete(room)} className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-[#e1b8ae] px-3 py-2 text-sm font-semibold text-[#9d4937] hover:border-[#9d4937] sm:w-fit"><TrashIcon /> Delete</button></div>
+                <div className="mt-4 flex flex-col gap-2 sm:flex-row"><button onClick={() => onEdit(room)} className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-[#cbc7bc] px-3 py-2 text-sm font-semibold text-[#202522] hover:border-[#202522] dark:border-white/10 dark:text-gray-200 dark:hover:bg-white/5 dark:hover:border-white/30 sm:w-fit"><PencilSimpleIcon /> Edit</button><button onClick={() => onDelete(room)} className="inline-flex w-full items-center justify-center gap-2 rounded-md border border-[#e1b8ae] px-3 py-2 text-sm font-semibold text-[#9d4937] hover:border-[#9d4937] dark:border-[#e1684e]/30 dark:text-[#e1684e] dark:hover:border-[#e1684e]/60 dark:hover:bg-[#e1684e]/10 sm:w-fit"><TrashIcon /> Delete</button></div>
             </div>
         </article>
     );
@@ -259,10 +259,10 @@ export default function RoomsPage() {
     return (
         <div className="mx-auto max-w-6xl space-y-6 md:space-y-8">
             <div className="flex flex-col justify-between gap-3 md:flex-row md:items-end md:gap-4">
-                <div><p className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#397052] md:mb-2 md:text-xs">Property inventory</p><h1 className="text-3xl font-semibold tracking-[-0.03em] text-[#202522]">Rooms</h1><p className="mt-1.5 text-sm leading-6 text-[#707770] md:mt-2">Keep room details, pricing, and availability up to date.</p></div>
-                <button onClick={openNewRoom} className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-[#397052] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#2e5942] md:w-fit"><PlusIcon weight="bold" /> Add room</button>
+                <div><p className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#397052] dark:text-[#55a278] md:mb-2 md:text-xs">Property inventory</p><h1 className="text-3xl font-semibold tracking-[-0.03em] text-[#202522] dark:text-gray-100">Rooms</h1><p className="mt-1.5 text-sm leading-6 text-[#707770] dark:text-gray-400 md:mt-2">Keep room details, pricing, and availability up to date.</p></div>
+                <button onClick={openNewRoom} className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-[#397052] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#2e5942] dark:bg-[#4d8a68] dark:hover:bg-[#397052] md:w-fit"><PlusIcon weight="bold" /> Add room</button>
             </div>
-            {error && <p role="alert" className="border-l-2 border-[#9d4937] bg-[#f8f7f3] px-4 py-3 text-sm text-[#9d4937]">{error}</p>}
+            {error && <p role="alert" className="border-l-2 border-[#9d4937] bg-[#f8f7f3] dark:bg-[#9d4937]/10 dark:border-[#e1684e] dark:text-[#e1684e] px-4 py-3 text-sm text-[#9d4937]">{error}</p>}
             
             <Modal
                 isOpen={editingId !== null}
@@ -273,22 +273,22 @@ export default function RoomsPage() {
             >
                 <form onSubmit={saveRoom} className="space-y-5">
                     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                        <label className="text-sm font-medium text-[#202522]">Room number<input required value={draft.roomNumber} onChange={(event) => updateDraft("roomNumber", event.target.value)} className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052]" /></label>
-                        <label className="text-sm font-medium text-[#202522]">Status<select value={draft.status} onChange={(event) => updateDraft("status", event.target.value)} className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052]"><option value="AVAILABLE">Available</option><option value="OCCUPIED">Occupied</option><option value="MAINTENANCE">Maintenance</option></select></label>
-                        <label className="text-sm font-medium text-[#202522]">Monthly rent<input required min="0" type="number" value={draft.monthlyRent} onChange={(event) => updateDraft("monthlyRent", event.target.value)} className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052]" /></label>
-                        <label className="text-sm font-medium text-[#202522]">Max occupancy<input required min="1" type="number" value={draft.maxOccupancy} onChange={(event) => updateDraft("maxOccupancy", event.target.value)} className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052]" /></label>
-                        <div className="text-sm font-medium text-[#202522] md:col-span-2 lg:col-span-3">
+                        <label className="text-sm font-medium text-[#202522] dark:text-gray-200">Room number<input required value={draft.roomNumber} onChange={(event) => updateDraft("roomNumber", event.target.value)} placeholder="e.g. 101 or 1A" className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052] dark:border-white/10 dark:bg-[#1a1a1a] dark:text-white dark:focus:border-[#55a278]" /></label>
+                        <label className="text-sm font-medium text-[#202522] dark:text-gray-200">Status<select value={draft.status} onChange={(event) => updateDraft("status", event.target.value)} className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052] dark:border-white/10 dark:bg-[#1a1a1a] dark:text-white dark:focus:border-[#55a278] dark:[&>option]:bg-[#1a1a1a] dark:[&>option]:text-white"><option value="AVAILABLE">Available</option><option value="OCCUPIED">Occupied</option><option value="MAINTENANCE">Maintenance</option></select></label>
+                        <label className="text-sm font-medium text-[#202522] dark:text-gray-200">Monthly rent<input required min="0" type="number" value={draft.monthlyRent} onChange={(event) => updateDraft("monthlyRent", event.target.value)} placeholder="e.g. 4500" className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052] dark:border-white/10 dark:bg-[#1a1a1a] dark:text-white dark:focus:border-[#55a278]" /></label>
+                        <label className="text-sm font-medium text-[#202522] dark:text-gray-200">Max occupancy<input required min="1" type="number" value={draft.maxOccupancy} onChange={(event) => updateDraft("maxOccupancy", event.target.value)} placeholder="e.g. 2" className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052] dark:border-white/10 dark:bg-[#1a1a1a] dark:text-white dark:focus:border-[#55a278]" /></label>
+                        <div className="text-sm font-medium text-[#202522] dark:text-gray-200 md:col-span-2 lg:col-span-3">
                             <span>Room photos</span>
-                            <label className="mt-2 flex cursor-pointer items-center justify-center gap-2 border border-dashed border-[#cbc7bc] bg-white px-4 py-5 text-sm font-semibold text-[#707770] transition-colors hover:border-[#397052] hover:text-[#397052]"><UploadSimpleIcon size={20} /><span>Choose photos</span><input type="file" accept="image/*" multiple onChange={addImages} className="sr-only" /></label>
-                            <p className="mt-2 text-xs font-normal text-[#858b84]">JPG, PNG, or WEBP · up to 5 MB each</p>
+                            <label className="mt-2 flex cursor-pointer items-center justify-center gap-2 border border-dashed border-[#cbc7bc] dark:border-white/20 bg-white dark:bg-[#1a1a1a] px-4 py-5 text-sm font-semibold text-[#707770] dark:text-gray-400 transition-colors hover:border-[#397052] dark:hover:border-[#55a278] hover:text-[#397052] dark:hover:text-[#55a278]"><UploadSimpleIcon size={20} /><span>Choose photos</span><input type="file" accept="image/*" multiple onChange={addImages} className="sr-only" /></label>
+                            <p className="mt-2 text-xs font-normal text-[#858b84] dark:text-gray-500">JPG, PNG, or WEBP · up to 5 MB each</p>
                             {roomImages.length > 0 && <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">{roomImages.map((image, index) => <div key={image.id} className="group relative aspect-square overflow-hidden bg-[#dedbd2]"><img src={image.url} alt={`${image.saved ? "Saved" : "New"} room photo ${index + 1}`} className="h-full w-full object-cover" /><button type="button" onClick={() => removeImage(image.id)} aria-label={`Remove room photo ${index + 1}`} className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-[#202522]/80 text-white opacity-100 transition-opacity hover:bg-[#397052] sm:opacity-0 sm:group-hover:opacity-100"><XIcon size={16} weight="bold" /></button><span className="absolute inset-x-0 bottom-0 truncate bg-[#202522]/75 px-2 py-1 text-[10px] font-semibold text-white">{image.saved ? "Saved photo" : image.file?.name ?? "New photo"}</span></div>)}</div>}
-                            {roomImages.length === 0 && <div className="mt-3 flex items-center gap-2 text-xs font-normal text-[#9d4937]"><FileImageIcon />{editingId ? "No saved photos. Add at least one photo for the room." : "Add at least one photo for the room."}</div>}
+                            {roomImages.length === 0 && <div className="mt-3 flex items-center gap-2 text-xs font-normal text-[#9d4937] dark:text-[#e1684e]"><FileImageIcon />{editingId ? "No saved photos. Add at least one photo for the room." : "Add at least one photo for the room."}</div>}
                         </div>
-                        <label className="text-sm font-medium text-[#202522] md:col-span-2 lg:col-span-3">Description<textarea value={draft.description} onChange={(event) => updateDraft("description", event.target.value)} rows={3} className="mt-2 w-full resize-y rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052]" /></label>
+                        <label className="text-sm font-medium text-[#202522] dark:text-gray-200 md:col-span-2 lg:col-span-3">Description<textarea value={draft.description} onChange={(event) => updateDraft("description", event.target.value)} rows={3} placeholder="Describe the room features..." className="mt-2 w-full resize-y rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052] dark:border-white/10 dark:bg-[#1a1a1a] dark:text-white dark:focus:border-[#55a278]" /></label>
                     </div>
                     <div className="mt-5 flex flex-col-reverse gap-2 md:flex-row md:justify-end">
-                        <button type="button" onClick={closeEditor} className="rounded-md px-4 py-2.5 text-sm font-semibold text-[#707770] hover:text-[#202522]">Cancel</button>
-                        <button disabled={saving} className="rounded-md bg-[#202522] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50">{saving ? "Saving..." : editingId ? "Save changes" : "Create room"}</button>
+                        <button type="button" onClick={closeEditor} className="rounded-md px-4 py-2.5 text-sm font-semibold text-[#707770] hover:text-[#202522] dark:text-gray-400 dark:hover:text-white">Cancel</button>
+                        <button disabled={saving} className="rounded-md bg-[#202522] dark:bg-white dark:text-[#202522] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50">{saving ? "Saving..." : editingId ? "Save changes" : "Create room"}</button>
                     </div>
                 </form>
             </Modal>
@@ -308,16 +308,17 @@ export default function RoomsPage() {
             <Modal
                 isOpen={!!deletingRoom}
                 onClose={() => !deleting && setDeletingRoom(null)}
-                title={<div className="mb-2"><p className="text-xs font-bold uppercase tracking-[0.16em] text-[#397052]">Permanent action</p><h2 className="mt-1 text-xl font-semibold text-[#202522]">Delete Room {deletingRoom?.roomNumber}?</h2></div>}
+                title={<div className="mb-2"><p className="text-xs font-bold uppercase tracking-[0.16em] text-[#397052] dark:text-[#55a278]">Permanent action</p><h2 className="mt-1 text-xl font-semibold text-[#202522] dark:text-gray-100">Delete Room {deletingRoom?.roomNumber}?</h2></div>}
                 maxWidth="md"
                 closeOnOutsideClick={!deleting}
                 hideCloseButton={deleting}
+                className="border-t-4 border-[#397052] dark:border-[#55a278]"
             >
-                <div className="border-t-2 border-[#397052] -mx-4 md:-mx-6 -mt-8 pt-6 px-4 md:px-6">
-                    <p className="text-sm leading-6 text-[#707770]">This removes the room from Aiven and deletes its linked photos from Supabase Storage. This action cannot be undone.</p>
+                <div className="pt-2">
+                    <p className="text-sm leading-6 text-[#707770] dark:text-gray-300">This removes the room from Aiven and deletes its linked photos from Supabase Storage. This action cannot be undone.</p>
                     <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-                        <button type="button" disabled={deleting} onClick={() => setDeletingRoom(null)} className="rounded-md px-4 py-2.5 text-sm font-semibold text-[#707770] hover:text-[#202522]">Cancel</button>
-                        <button type="button" disabled={deleting} onClick={deleteRoom} className="inline-flex items-center justify-center gap-2 rounded-md bg-[#9d4937] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50"><TrashIcon /> {deleting ? "Deleting..." : "Delete room"}</button>
+                        <button type="button" disabled={deleting} onClick={() => setDeletingRoom(null)} className="rounded-md px-4 py-2.5 text-sm font-semibold text-[#707770] hover:text-[#202522] dark:text-gray-400 dark:hover:text-white">Cancel</button>
+                        <button type="button" disabled={deleting} onClick={deleteRoom} className="inline-flex items-center justify-center gap-2 rounded-md bg-[#9d4937] dark:bg-[#e1684e] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50"><TrashIcon /> {deleting ? "Deleting..." : "Delete room"}</button>
                     </div>
                 </div>
             </Modal>

@@ -51,18 +51,18 @@ export default function DeleteBillingModal({ billing, onClose, onSuccess }: Dele
       onClose={() => !deleting && onClose()}
       title={
         <div>
-          <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#397052]">Permanent action</p>
-          <h2 className="mt-2 text-xl font-semibold text-[#202522]">Delete Invoice #{billing?.id}?</h2>
+          <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#397052] dark:text-[#55a278]">Permanent action</p>
+          <h2 className="mt-2 text-xl font-semibold text-[#202522] dark:text-gray-100">Delete Invoice #{billing?.id}?</h2>
         </div>
       }
       maxWidth="md"
       closeOnOutsideClick={!deleting}
       hideCloseButton={deleting}
-      className="p-5 sm:p-7 border-t-[#397052]"
+      className="p-5 sm:p-7 border-t-[#397052] dark:border-t-[#55a278]"
     >
       {billing && (
         <>
-          <p className="text-sm leading-6 text-[#707770]">
+          <p className="text-sm leading-6 text-[#707770] dark:text-gray-400">
             This removes the invoice record from Aiven and deletes its linked meter photo from Supabase Storage.
           </p>
 
@@ -77,7 +77,7 @@ export default function DeleteBillingModal({ billing, onClose, onSuccess }: Dele
               type="button"
               disabled={deleting}
               onClick={onClose}
-              className="rounded-md px-4 py-2.5 text-sm font-semibold text-[#707770] hover:text-[#202522]"
+              className="rounded-md px-4 py-2.5 text-sm font-semibold text-[#707770] hover:text-[#202522] dark:text-gray-400 dark:hover:text-white"
             >
               Cancel
             </button>

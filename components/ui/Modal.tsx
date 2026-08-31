@@ -65,7 +65,7 @@ export default function Modal({
 
   return createPortal(
     <div
-      className={`fixed inset-0 z-50 flex justify-center bg-[#202522]/60 p-0 md:p-6 transition-opacity duration-200 ${alignClass}`}
+      className={`fixed inset-0 z-50 flex justify-center bg-[#202522]/60 dark:bg-black/80 p-0 md:p-6 transition-opacity duration-200 ${alignClass} print:hidden`}
       role="presentation"
       onClick={() => closeOnOutsideClick && onClose()}
     >
@@ -73,13 +73,13 @@ export default function Modal({
         role="dialog"
         aria-modal="true"
         onClick={(event) => event.stopPropagation()}
-        className={`w-full max-h-[92vh] overflow-y-auto border-t-2 border-[#202522] bg-[#f8f7f3] shadow-2xl p-4 md:p-6 ${maxWidthClass} ${className}`}
+        className={`relative w-full max-h-[92vh] overflow-y-auto border-t-2 border-[#202522] bg-[#f8f7f3] dark:border-white/10 dark:bg-[#1e1e1e] shadow-2xl p-4 md:p-6 ${maxWidthClass} ${className}`}
       >
         {(title || !hideCloseButton) && (
-          <div className="mb-5 flex items-center justify-between gap-4">
+          <div className="mb-5 flex items-start justify-between gap-4 pr-8">
             {title ? (
               typeof title === "string" ? (
-                <h2 className="text-base font-semibold text-[#202522]">{title}</h2>
+                <h2 className="text-base font-semibold text-[#202522] dark:text-gray-100">{title}</h2>
               ) : (
                 title
               )
@@ -91,7 +91,7 @@ export default function Modal({
                 type="button"
                 onClick={onClose}
                 aria-label="Close"
-                className="p-1 text-[#707770] hover:text-[#202522] transition-colors"
+                className="absolute top-4 right-4 md:top-5 md:right-5 p-1 text-[#707770] hover:text-[#202522] dark:text-gray-400 dark:hover:text-white transition-colors"
               >
                 <XIcon size={20} />
               </button>

@@ -329,13 +329,13 @@ export default function EditBillingModal({
         )}
 
         <div className="grid gap-4 md:grid-cols-2">
-          <label className="text-sm font-medium text-[#202522]">
+          <label className="text-sm font-medium text-[#202522] dark:text-gray-200">
             Resident
             <select
               required
               value={draft.tenantId}
               onChange={(e) => handleTenantSelect(e.target.value)}
-              className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052]"
+              className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052] dark:border-white/10 dark:bg-[#1a1a1a] dark:text-white dark:focus:border-[#55a278]"
             >
               <option value="">Select an active resident</option>
               {activeTenants.map((tenant) => (
@@ -346,13 +346,13 @@ export default function EditBillingModal({
             </select>
           </label>
 
-          <label className="text-sm font-medium text-[#202522]">
+          <label className="text-sm font-medium text-[#202522] dark:text-gray-200">
             Room
             <select
               required
               value={draft.roomId}
               onChange={(e) => updateDraft("roomId", e.target.value)}
-              className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052]"
+              className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052] dark:border-white/10 dark:bg-[#1a1a1a] dark:text-white dark:focus:border-[#55a278]"
             >
               <option value="">Select Room</option>
               {rooms.map((room) => (
@@ -363,7 +363,7 @@ export default function EditBillingModal({
             </select>
           </label>
 
-          <label className="text-sm font-medium text-[#202522]">
+          <label className="text-sm font-medium text-[#202522] dark:text-gray-200">
             Base Rent (₱)
             <input
               type="number"
@@ -371,11 +371,12 @@ export default function EditBillingModal({
               min="0"
               value={draft.rentAmount}
               onChange={(e) => updateDraft("rentAmount", e.target.value === "" ? "" : Number(e.target.value))}
-              className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052]"
+              placeholder="0.00"
+              className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052] dark:border-white/10 dark:bg-[#1a1a1a] dark:text-white dark:focus:border-[#55a278]"
             />
           </label>
 
-          <label className="text-sm font-medium text-[#202522]">
+          <label className="text-sm font-medium text-[#202522] dark:text-gray-200">
             Water Bill (₱)
             <input
               type="number"
@@ -383,38 +384,41 @@ export default function EditBillingModal({
               min="0"
               value={draft.waterBill}
               onChange={(e) => updateDraft("waterBill", e.target.value === "" ? "" : Number(e.target.value))}
-              className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052]"
+              placeholder="0.00"
+              className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052] dark:border-white/10 dark:bg-[#1a1a1a] dark:text-white dark:focus:border-[#55a278]"
             />
           </label>
         </div>
 
         {/* Electricity Matrix */}
-        <div className="mt-4 rounded-md border border-[#dcd9d1] bg-[#f0ede6] p-4">
-          <p className="text-xs font-bold uppercase tracking-wider text-[#707770]">Electricity Computation</p>
+        <div className="mt-4 rounded-md border border-[#dcd9d1] bg-[#f0ede6] p-4 dark:border-white/10 dark:bg-white/5">
+          <p className="text-xs font-bold uppercase tracking-wider text-[#707770] dark:text-gray-400">Electricity Computation</p>
           <div className="mt-3 grid gap-3 md:grid-cols-3">
-            <label className="text-xs font-medium text-[#202522]">
+            <label className="text-xs font-medium text-[#202522] dark:text-gray-200">
               Previous Reading (kWh)
               <input
                 type="number"
                 min="0"
                 value={draft.previousElectricityReading}
                 onChange={(e) => updateDraft("previousElectricityReading", e.target.value === "" ? "" : Number(e.target.value))}
-                className="mt-1 w-full rounded-md border border-[#dcd9d1] bg-white px-2.5 py-1.5 text-sm font-normal outline-none focus:border-[#397052]"
+                placeholder="e.g. 100"
+                className="mt-1 w-full rounded-md border border-[#dcd9d1] bg-white px-2.5 py-1.5 text-sm font-normal outline-none focus:border-[#397052] dark:border-white/10 dark:bg-[#1a1a1a] dark:text-white dark:focus:border-[#55a278]"
               />
             </label>
 
-            <label className="text-xs font-medium text-[#202522]">
+            <label className="text-xs font-medium text-[#202522] dark:text-gray-200">
               Current Reading (kWh)
               <input
                 type="number"
                 min="0"
                 value={draft.currentElectricityReading}
                 onChange={(e) => updateDraft("currentElectricityReading", e.target.value === "" ? "" : Number(e.target.value))}
-                className="mt-1 w-full rounded-md border border-[#dcd9d1] bg-white px-2.5 py-1.5 text-sm font-normal outline-none focus:border-[#397052]"
+                placeholder="e.g. 150"
+                className="mt-1 w-full rounded-md border border-[#dcd9d1] bg-white px-2.5 py-1.5 text-sm font-normal outline-none focus:border-[#397052] dark:border-white/10 dark:bg-[#1a1a1a] dark:text-white dark:focus:border-[#55a278]"
               />
             </label>
 
-            <label className="text-xs font-medium text-[#202522]">
+            <label className="text-xs font-medium text-[#202522] dark:text-gray-200">
               Rate per kWh (₱)
               <input
                 type="number"
@@ -422,63 +426,64 @@ export default function EditBillingModal({
                 min="0"
                 value={draft.electricityRatePerKwh}
                 onChange={(e) => updateDraft("electricityRatePerKwh", e.target.value === "" ? "" : Number(e.target.value))}
-                className="mt-1 w-full rounded-md border border-[#dcd9d1] bg-white px-2.5 py-1.5 text-sm font-normal outline-none focus:border-[#397052]"
+                placeholder="e.g. 15.00"
+                className="mt-1 w-full rounded-md border border-[#dcd9d1] bg-white px-2.5 py-1.5 text-sm font-normal outline-none focus:border-[#397052] dark:border-white/10 dark:bg-[#1a1a1a] dark:text-white dark:focus:border-[#55a278]"
               />
             </label>
           </div>
 
-          <div className="mt-3 flex items-center justify-between border-t border-[#dcd9d1] pt-3 text-xs">
-            <span className="text-[#707770]">
+          <div className="mt-3 flex items-center justify-between border-t border-[#dcd9d1] pt-3 text-xs dark:border-white/10">
+            <span className="text-[#707770] dark:text-gray-400">
               Consumed Usage:{" "}
-              <strong>
+              <strong className="dark:text-gray-200">
                 {Math.max(0, (Number(draft.currentElectricityReading) || 0) - (Number(draft.previousElectricityReading) || 0))} kWh
               </strong>
             </span>
-            <span className="font-semibold text-[#202522]">
+            <span className="font-semibold text-[#202522] dark:text-gray-100">
               Subtotal: {formatCurrency(calculatedElectricityBill)}
             </span>
           </div>
         </div>
 
         {/* Meter Photo Upload */}
-        <div className="mt-4 text-sm font-medium text-[#202522]">
+        <div className="mt-4 text-sm font-medium text-[#202522] dark:text-gray-200">
           <span>Meter Reading Proof (Supabase Storage)</span>
           {!readingImage ? (
-            <label className="mt-2 flex cursor-pointer items-center justify-center gap-2 border border-dashed border-[#cbc7bc] bg-white px-4 py-5 text-sm font-semibold text-[#707770] transition-colors hover:border-[#397052] hover:text-[#397052]">
+            <label className="mt-2 flex cursor-pointer items-center justify-center gap-2 border border-dashed border-[#cbc7bc] bg-white px-4 py-5 text-sm font-semibold text-[#707770] transition-colors hover:border-[#397052] hover:text-[#397052] dark:border-white/20 dark:bg-[#1a1a1a] dark:text-gray-400 dark:hover:border-[#55a278] dark:hover:text-[#55a278]">
               <UploadSimpleIcon size={20} />
               <span>Upload meter photo</span>
               <input type="file" accept="image/*" onChange={handleImageChange} className="sr-only" />
             </label>
           ) : (
-            <div className="mt-2 flex items-center gap-3 rounded-md border border-[#dcd9d1] bg-white p-2">
-              <div className="relative h-16 w-16 overflow-hidden rounded bg-[#dedbd2]">
+            <div className="mt-2 flex items-center gap-3 rounded-md border border-[#dcd9d1] bg-white p-2 dark:border-white/10 dark:bg-[#1a1a1a]">
+              <div className="relative h-16 w-16 overflow-hidden rounded bg-[#dedbd2] dark:bg-[#2a2a2a]">
                 <img src={readingImage.url} alt="Meter reading" className="h-full w-full object-cover" />
               </div>
               <div className="flex-1 truncate">
-                <p className="truncate text-xs font-semibold text-[#202522]">
+                <p className="truncate text-xs font-semibold text-[#202522] dark:text-gray-200">
                   {readingImage.saved ? "Saved photo" : readingImage.file?.name ?? "New photo"}
                 </p>
-                <p className="text-[11px] text-[#858b84]">Ready for upload</p>
+                <p className="text-[11px] text-[#858b84] dark:text-gray-400">Ready for upload</p>
               </div>
               <button
                 type="button"
                 onClick={removeImage}
-                className="rounded p-1 text-[#707770] hover:bg-[#f8f7f3] hover:text-[#9d4937]"
+                className="rounded p-1 text-[#707770] hover:bg-[#f8f7f3] hover:text-[#9d4937] dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-[#e1684e]"
               >
                 <XIcon size={18} />
               </button>
             </div>
           )}
-          <p className="mt-1 text-xs font-normal text-[#858b84]">JPG, PNG, or WEBP · up to 5 MB</p>
+          <p className="mt-1 text-xs font-normal text-[#858b84] dark:text-gray-500">JPG, PNG, or WEBP · up to 5 MB</p>
         </div>
 
         <div className="mt-4 grid gap-4 md:grid-cols-3">
-          <label className="text-sm font-medium text-[#202522]">
+          <label className="text-sm font-medium text-[#202522] dark:text-gray-200">
             Status
             <select
               value={draft.status}
               onChange={(e) => updateDraft("status", e.target.value as Billing["status"])}
-              className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052]"
+              className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052] dark:border-white/10 dark:bg-[#1a1a1a] dark:text-white dark:focus:border-[#55a278]"
             >
               <option value="UNPAID">Unpaid</option>
               <option value="PAID">Paid</option>
@@ -486,34 +491,34 @@ export default function EditBillingModal({
             </select>
           </label>
 
-          <label className="text-sm font-medium text-[#202522]">
+          <label className="text-sm font-medium text-[#202522] dark:text-gray-200">
             Billing Date
             <input
               type="date"
               required
               value={draft.billingDate}
               onChange={(e) => updateDraft("billingDate", e.target.value)}
-              className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052]"
+              className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052] dark:border-white/10 dark:bg-[#1a1a1a] dark:text-white dark:focus:border-[#55a278]"
             />
           </label>
 
-          <label className="text-sm font-medium text-[#202522]">
+          <label className="text-sm font-medium text-[#202522] dark:text-gray-200">
             Due Date
             <input
               type="date"
               required
               value={draft.dueDate}
               onChange={(e) => updateDraft("dueDate", e.target.value)}
-              className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052]"
+              className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052] dark:border-white/10 dark:bg-[#1a1a1a] dark:text-white dark:focus:border-[#55a278]"
             />
           </label>
         </div>
 
         {/* Total Computed Summary */}
-        <div className="mt-6 flex items-center justify-between rounded-md bg-[#202522] p-4 text-white">
+        <div className="mt-6 flex items-center justify-between rounded-md bg-[#202522] p-4 text-white dark:bg-white/10">
           <div>
-            <p className="text-xs uppercase tracking-wider text-[#cbc7bc]">Total Amount Due</p>
-            <p className="text-xs text-[#a0a6a0]">Rent + Water + Electricity</p>
+            <p className="text-xs uppercase tracking-wider text-[#cbc7bc] dark:text-gray-400">Total Amount Due</p>
+            <p className="text-xs text-[#a0a6a0] dark:text-gray-500">Rent + Water + Electricity</p>
           </div>
           <p className="text-xl font-bold">{formatCurrency(calculatedTotalAmount)}</p>
         </div>
@@ -522,14 +527,14 @@ export default function EditBillingModal({
           <button
             type="button"
             onClick={handleClose}
-            className="rounded-md px-4 py-2.5 text-sm font-semibold text-[#707770] hover:text-[#202522]"
+            className="rounded-md px-4 py-2.5 text-sm font-semibold text-[#707770] hover:text-[#202522] dark:text-gray-400 dark:hover:text-white"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={saving}
-            className="rounded-md bg-[#202522] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
+            className="rounded-md bg-[#202522] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50 dark:bg-white dark:text-[#202522]"
           >
             {saving ? "Saving..." : billing ? "Save Changes" : "Issue Invoice"}
           </button>

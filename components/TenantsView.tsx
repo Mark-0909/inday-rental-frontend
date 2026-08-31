@@ -196,8 +196,8 @@ export default function TenantsPage() {
     setTenantBillings([]);
     setError(null);
     try {
-      const response = await endpoints.billing.getAll();
-      const allBillings: Billing[] = response.data;
+      const response = await endpoints.billing.getAll(0, 100);
+      const allBillings: Billing[] = response.data.content || [];
       const filtered = allBillings.filter((b) => b.tenant?.id === tenant.id);
       setTenantBillings(filtered);
     } catch {
@@ -210,8 +210,8 @@ export default function TenantsPage() {
   const refreshTenantBillings = async () => {
     if (!viewingTenant) return;
     try {
-      const response = await endpoints.billing.getAll();
-      const allBillings: Billing[] = response.data;
+      const response = await endpoints.billing.getAll(0, 100);
+      const allBillings: Billing[] = response.data.content || [];
       const filtered = allBillings.filter((b) => b.tenant?.id === viewingTenant.id);
       setTenantBillings(filtered);
     } catch {
@@ -329,17 +329,17 @@ export default function TenantsPage() {
     <div className="mx-auto max-w-6xl space-y-6 md:space-y-8">
       <div className="flex flex-col justify-between gap-3 md:flex-row md:items-end md:gap-4">
         <div>
-          <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#397052] md:mb-2 md:text-xs">
+          <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#397052] dark:text-[#55a278] md:mb-2 md:text-xs">
             Resident directory
           </p>
-          <h1 className="text-3xl font-semibold tracking-[-0.03em] text-[#202522]">Tenants</h1>
-          <p className="mt-1.5 text-sm leading-6 text-[#707770] md:mt-2">
+          <h1 className="text-3xl font-semibold tracking-[-0.03em] text-[#202522] dark:text-gray-100">Tenants</h1>
+          <p className="mt-1.5 text-sm leading-6 text-[#707770] dark:text-gray-400 md:mt-2">
             Track residents, assigned rooms, and occupancy status.
           </p>
         </div>
         <button
           onClick={openNewTenant}
-          className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-[#397052] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#2e5942] md:w-fit"
+          className="inline-flex w-full items-center justify-center gap-2 rounded-md bg-[#397052] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#2e5942] dark:bg-[#4d8a68] dark:hover:bg-[#397052] md:w-fit"
         >
           <PlusIcon weight="bold" /> Add tenant
         </button>
@@ -351,38 +351,38 @@ export default function TenantsPage() {
         </p>
       )}
 
-      <section className="overflow-hidden border border-[#dcd9d1] bg-[#f8f7f3]">
+      <section className="overflow-hidden border border-[#dcd9d1] bg-[#f8f7f3] dark:border-white/10 dark:bg-[#1e1e1e]">
         {tenants.length === 0 ? (
-          <p className="py-10 text-center text-sm text-[#707770]">
+          <p className="py-10 text-center text-sm text-[#707770] dark:text-gray-400">
             No tenants yet. Add your first tenant to get started.
           </p>
         ) : (
           <div className="overflow-hidden">
             {/* Mobile Card Layout (< md screen width) */}
-            <div className="divide-y divide-[#dcd9d1] md:hidden">
+            <div className="divide-y divide-[#dcd9d1] dark:divide-white/10 md:hidden">
               {sortedTenants.map((tenant) => (
-                <div key={tenant.id} className="p-4 space-y-3 bg-[#f8f7f3]">
+                <div key={tenant.id} className="p-4 space-y-3 bg-[#f8f7f3] dark:bg-[#1e1e1e]">
                   <div className="flex justify-between items-start">
-                    <span className="font-semibold text-base text-[#202522]">{tenant.fullName}</span>
+                    <span className="font-semibold text-base text-[#202522] dark:text-gray-100">{tenant.fullName}</span>
                     <span
                       className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide shrink-0 ${
                         tenant.status === "ACTIVE"
-                          ? "bg-[#dcecdf] text-[#397052]"
-                          : "bg-[#eee4d6] text-[#94613a]"
+                          ? "bg-[#dcecdf] text-[#397052] dark:bg-[#397052]/20 dark:text-[#55a278]"
+                          : "bg-[#eee4d6] text-[#94613a] dark:bg-[#94613a]/20 dark:text-[#d39c71]"
                       }`}
                     >
                       {tenant.status.toLowerCase()}
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2 rounded-md border border-[#e5e2da] bg-[#efede7]/60 p-2.5 text-xs">
+                  <div className="grid grid-cols-2 gap-2 rounded-md border border-[#e5e2da] dark:border-white/10 bg-[#efede7]/60 dark:bg-white/5 p-2.5 text-xs">
                     <div>
-                      <span className="text-[#858b84] block">Contact:</span>
-                      <span className="font-medium text-[#202522]">{tenant.phone}</span>
+                      <span className="text-[#858b84] dark:text-gray-400 block">Contact:</span>
+                      <span className="font-medium text-[#202522] dark:text-gray-100">{tenant.phone}</span>
                     </div>
                     <div>
-                      <span className="text-[#858b84] block">Room:</span>
-                      <span className="font-medium text-[#202522]">
+                      <span className="text-[#858b84] dark:text-gray-400 block">Room:</span>
+                      <span className="font-medium text-[#202522] dark:text-gray-100">
                         {tenant.status === "ACTIVE"
                           ? `Room ${
                               tenant.room?.roomNumber ??
@@ -393,8 +393,8 @@ export default function TenantsPage() {
                       </span>
                     </div>
                     <div className="col-span-2">
-                      <span className="text-[#858b84] block">Billing Date:</span>
-                      <span className="font-medium text-[#202522]">{formatDate(tenant.billingDate)}</span>
+                      <span className="text-[#858b84] dark:text-gray-400 block">Billing Date:</span>
+                      <span className="font-medium text-[#202522] dark:text-gray-100">{formatDate(tenant.billingDate)}</span>
                     </div>
                   </div>
 
@@ -402,20 +402,20 @@ export default function TenantsPage() {
                   <div className="flex flex-wrap items-center gap-1.5 pt-1">
                     <button
                       onClick={() => openViewTenant(tenant)}
-                      className="inline-flex flex-1 justify-center items-center gap-1 rounded-md border border-[#cbc7bc] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#202522] hover:border-[#202522]"
+                      className="inline-flex flex-1 justify-center items-center gap-1 rounded-md border border-[#cbc7bc] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#202522] hover:border-[#202522] dark:border-white/10 dark:bg-[#1a1a1a] dark:text-gray-200 dark:hover:border-white/30 dark:hover:bg-white/5"
                     >
                       <EyeIcon size={14} /> View
                     </button>
                     <button
                       onClick={() => openEditTenant(tenant)}
-                      className="inline-flex flex-1 justify-center items-center gap-1 rounded-md border border-[#cbc7bc] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#202522] hover:border-[#202522]"
+                      className="inline-flex flex-1 justify-center items-center gap-1 rounded-md border border-[#cbc7bc] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#202522] hover:border-[#202522] dark:border-white/10 dark:bg-[#1a1a1a] dark:text-gray-200 dark:hover:border-white/30 dark:hover:bg-white/5"
                     >
                       <PencilSimpleIcon size={14} /> Edit
                     </button>
                     {tenant.status === "ACTIVE" && (
                       <button
                         onClick={() => openMoveOutModal(tenant)}
-                        className="inline-flex flex-1 justify-center items-center gap-1 rounded-md border border-[#e1b8ae] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#9d4937] hover:border-[#9d4937]"
+                        className="inline-flex flex-1 justify-center items-center gap-1 rounded-md border border-[#e1b8ae] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#9d4937] hover:border-[#9d4937] dark:border-[#e1684e]/30 dark:bg-[#1a1a1a] dark:text-[#e1684e] dark:hover:bg-[#e1684e]/10 dark:hover:border-[#e1684e]/60"
                       >
                         <ArrowSquareOutIcon size={14} /> Move out
                       </button>
@@ -427,8 +427,8 @@ export default function TenantsPage() {
 
             {/* Desktop Table Layout (>= md screen width) */}
             <div className="hidden md:block overflow-x-auto">
-            <table className="min-w-full divide-y divide-[#dcd9d1] text-left">
-              <thead className="bg-[#efede7] text-xs font-semibold uppercase tracking-[0.12em] text-[#707770]">
+            <table className="min-w-full divide-y divide-[#dcd9d1] dark:divide-white/10 text-left">
+              <thead className="bg-[#efede7] dark:bg-white/5 text-xs font-semibold uppercase tracking-[0.12em] text-[#707770] dark:text-gray-400">
                 <tr>
                   <th className="px-4 py-3">Tenant</th>
                   <th className="px-4 py-3">Contact</th>
@@ -438,11 +438,11 @@ export default function TenantsPage() {
                   <th className="px-4 py-3 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#e5e2da] text-sm text-[#202522]">
+              <tbody className="divide-y divide-[#e5e2da] dark:divide-white/10 text-sm text-[#202522] dark:text-gray-200">
                 {sortedTenants.map((tenant) => (
-                  <tr key={tenant.id} className="bg-[#f8f7f3]">
-                    <td className="px-4 py-3.5 font-medium">{tenant.fullName}</td>
-                    <td className="px-4 py-3.5 text-[#5b625b]">{tenant.phone}</td>
+                  <tr key={tenant.id} className="bg-[#f8f7f3] transition-colors hover:bg-[#f3f0e8]/50 dark:bg-[#1e1e1e] dark:hover:bg-white/5">
+                    <td className="px-4 py-3.5 font-medium text-[#202522] dark:text-gray-100">{tenant.fullName}</td>
+                    <td className="px-4 py-3.5 text-[#5b625b] dark:text-gray-300">{tenant.phone}</td>
                     <td className="px-4 py-3.5">
                       {tenant.status === "ACTIVE"
                         ? `Room ${
@@ -452,13 +452,13 @@ export default function TenantsPage() {
                           }`
                         : "Unassigned"}
                     </td>
-                    <td className="px-4 py-3.5 text-[#5b625b]">{formatDate(tenant.billingDate)}</td>
+                    <td className="px-4 py-3.5 text-[#5b625b] dark:text-gray-300">{formatDate(tenant.billingDate)}</td>
                     <td className="px-4 py-3.5">
                       <span
                         className={`rounded-full px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide ${
                           tenant.status === "ACTIVE"
-                            ? "bg-[#dcecdf] text-[#397052]"
-                            : "bg-[#eee4d6] text-[#94613a]"
+                            ? "bg-[#dcecdf] text-[#397052] dark:bg-[#397052]/20 dark:text-[#55a278]"
+                            : "bg-[#eee4d6] text-[#94613a] dark:bg-[#94613a]/20 dark:text-[#d39c71]"
                         }`}
                       >
                         {tenant.status.toLowerCase()}
@@ -468,20 +468,20 @@ export default function TenantsPage() {
                       <div className="flex justify-end gap-2">
                         <button
                           onClick={() => openViewTenant(tenant)}
-                          className="inline-flex items-center gap-1 rounded-md border border-[#cbc7bc] px-3 py-1.5 text-xs font-semibold text-[#202522] hover:border-[#202522]"
+                          className="inline-flex items-center gap-1 rounded-md border border-[#cbc7bc] px-3 py-1.5 text-xs font-semibold text-[#202522] hover:border-[#202522] dark:border-white/10 dark:bg-[#1a1a1a] dark:text-gray-200 dark:hover:border-white/30 dark:hover:bg-white/5"
                         >
                           <EyeIcon size={14} /> View
                         </button>
                         <button
                           onClick={() => openEditTenant(tenant)}
-                          className="inline-flex items-center gap-1 rounded-md border border-[#cbc7bc] px-3 py-1.5 text-xs font-semibold text-[#202522] hover:border-[#202522]"
+                          className="inline-flex items-center gap-1 rounded-md border border-[#cbc7bc] px-3 py-1.5 text-xs font-semibold text-[#202522] hover:border-[#202522] dark:border-white/10 dark:bg-[#1a1a1a] dark:text-gray-200 dark:hover:border-white/30 dark:hover:bg-white/5"
                         >
                           <PencilSimpleIcon size={14} /> Edit
                         </button>
                         {tenant.status === "ACTIVE" && (
                           <button
                             onClick={() => openMoveOutModal(tenant)}
-                            className="inline-flex items-center gap-1 rounded-md border border-[#e1b8ae] px-3 py-1.5 text-xs font-semibold text-[#9d4937] hover:border-[#9d4937]"
+                            className="inline-flex items-center gap-1 rounded-md border border-[#e1b8ae] px-3 py-1.5 text-xs font-semibold text-[#9d4937] hover:border-[#9d4937] dark:border-[#e1684e]/30 dark:bg-[#1a1a1a] dark:text-[#e1684e] dark:hover:bg-[#e1684e]/10 dark:hover:border-[#e1684e]/60"
                           >
                             <ArrowSquareOutIcon size={14} /> Move out
                           </button>
@@ -512,16 +512,17 @@ export default function TenantsPage() {
       >
         <form onSubmit={saveTenant} className="space-y-5">
           <div className="grid gap-4 md:grid-cols-2">
-            <label className="text-sm font-medium text-[#202522]">
+            <label className="text-sm font-medium text-[#202522] dark:text-gray-200">
               Full name
               <input
                 required
                 value={draft.fullName}
                 onChange={(event) => updateDraft("fullName", event.target.value)}
-                className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052]"
+                placeholder="e.g. Juan Dela Cruz"
+                className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052] dark:border-white/10 dark:bg-[#1a1a1a] dark:text-white dark:focus:border-[#55a278]"
               />
             </label>
-            <label className="text-sm font-medium text-[#202522]">
+            <label className="text-sm font-medium text-[#202522] dark:text-gray-200">
               Contact number
               <input
                 required
@@ -531,38 +532,39 @@ export default function TenantsPage() {
                   const val = event.target.value.replace(/[^0-9+\-\s()]/g, "");
                   updateDraft("phone", val);
                 }}
-                className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052]"
+                placeholder="e.g. 0912 345 6789"
+                className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052] dark:border-white/10 dark:bg-[#1a1a1a] dark:text-white dark:focus:border-[#55a278]"
               />
             </label>
-            <label className="text-sm font-medium text-[#202522]">
+            <label className="text-sm font-medium text-[#202522] dark:text-gray-200">
               Date moved in
               <input
                 required
                 type="date"
                 value={draft.moveInDate}
                 onChange={(event) => updateDraft("moveInDate", event.target.value)}
-                className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052]"
+                className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052] dark:border-white/10 dark:bg-[#1a1a1a] dark:text-white dark:focus:border-[#55a278]"
               />
             </label>
-            <label className="text-sm font-medium text-[#202522]">
+            <label className="text-sm font-medium text-[#202522] dark:text-gray-200">
               Date moved out
               <input
                 type="date"
                 value={draft.moveOutDate}
                 onChange={(event) => updateDraft("moveOutDate", event.target.value)}
-                className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052]"
+                className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052] dark:border-white/10 dark:bg-[#1a1a1a] dark:text-white dark:focus:border-[#55a278]"
               />
             </label>
-            <label className="text-sm font-medium text-[#202522]">
+            <label className="text-sm font-medium text-[#202522] dark:text-gray-200">
               Billing Date
               <input
                 type="date"
                 value={draft.billingDate}
                 onChange={(event) => updateDraft("billingDate", event.target.value)}
-                className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052]"
+                className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052] dark:border-white/10 dark:bg-[#1a1a1a] dark:text-white dark:focus:border-[#55a278]"
               />
             </label>
-            <label className="text-sm font-medium text-[#202522]">
+            <label className="text-sm font-medium text-[#202522] dark:text-gray-200">
               Status
               <select
                 value={draft.status}
@@ -573,19 +575,19 @@ export default function TenantsPage() {
                     status: newStatus,
                   }));
                 }}
-                className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052]"
+                className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052] dark:border-white/10 dark:bg-[#1a1a1a] dark:text-white dark:focus:border-[#55a278] dark:[&>option]:bg-[#1a1a1a] dark:[&>option]:text-white"
               >
                 <option value="ACTIVE">Active</option>
                 <option value="INACTIVE">Inactive</option>
               </select>
             </label>
-            <label className="text-sm font-medium text-[#202522] md:col-span-2">
+            <label className="text-sm font-medium text-[#202522] dark:text-gray-200 md:col-span-2">
               Assigned room
               <select
                 required
                 value={draft.roomId}
                 onChange={(event) => updateDraft("roomId", event.target.value)}
-                className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052]"
+                className="mt-2 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2.5 font-normal outline-none focus:border-[#397052] dark:border-white/10 dark:bg-[#1a1a1a] dark:text-white dark:focus:border-[#55a278] dark:[&>option]:bg-[#1a1a1a] dark:[&>option]:text-white"
               >
                 <option value="">Select a room</option>
                 {selectableRooms.map((room) => {
@@ -599,12 +601,12 @@ export default function TenantsPage() {
                 })}
               </select>
               {selectableRooms.length === 0 && (
-                <p className="mt-2 text-xs text-[#9d4937]">
+                <p className="mt-2 text-xs text-[#9d4937] dark:text-[#e1684e]">
                   No rooms are available for assignment right now.
                 </p>
               )}
               {Boolean(currentEditingRoomId) && unavailableRoomIds.has(currentEditingRoomId) && (
-                <p className="mt-2 text-xs text-[#707770]">
+                <p className="mt-2 text-xs text-[#707770] dark:text-gray-400">
                   Current room remains selectable for this tenant.
                 </p>
               )}
@@ -615,13 +617,13 @@ export default function TenantsPage() {
             <button
               type="button"
               onClick={closeEditor}
-              className="rounded-md px-4 py-2.5 text-sm font-semibold text-[#707770] hover:text-[#202522]"
+              className="rounded-md px-4 py-2.5 text-sm font-semibold text-[#707770] hover:text-[#202522] dark:text-gray-400 dark:hover:text-white"
             >
               Cancel
             </button>
             <button
               disabled={saving}
-              className="rounded-md bg-[#202522] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
+              className="rounded-md bg-[#202522] dark:bg-white dark:text-[#121212] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50 dark:disabled:bg-white/50"
             >
               {saving ? "Saving..." : editingId ? "Save changes" : "Create tenant"}
             </button>
@@ -634,10 +636,10 @@ export default function TenantsPage() {
         onClose={() => !processingMoveOut && setMovingOutTenant(null)}
         title={
           <div className="mb-2">
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#397052]">
+            <p className="text-xs font-bold uppercase tracking-[0.16em] text-[#397052] dark:text-[#55a278]">
               Resident Checkout
             </p>
-            <h2 className="mt-1 text-xl font-semibold text-[#202522]">
+            <h2 className="mt-1 text-xl font-semibold text-[#202522] dark:text-gray-100">
               Move out {movingOutTenant?.fullName}?
             </h2>
           </div>
@@ -645,22 +647,23 @@ export default function TenantsPage() {
         maxWidth="md"
         closeOnOutsideClick={!processingMoveOut}
         hideCloseButton={processingMoveOut}
+        className="border-t-4 border-[#397052] dark:border-[#55a278]"
       >
-        <div className="border-t-2 border-[#397052] -mx-4 md:-mx-6 -mt-8 pt-6 px-4 md:px-6">
-          <p className="text-sm leading-6 text-[#707770]">
+        <div className="pt-2">
+          <p className="text-sm leading-6 text-[#707770] dark:text-gray-400">
             This will change the tenant status to <strong>Inactive</strong> and free up the
             room assignment.
           </p>
 
           <div className="mt-4">
-            <label className="block text-sm font-medium text-[#202522]">
+            <label className="block text-sm font-medium text-[#202522] dark:text-gray-200">
               Move-out Date
               <input
                 type="date"
                 required
                 value={moveOutDate}
                 onChange={(e) => setMoveOutDate(e.target.value)}
-                className="mt-1.5 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2 text-sm outline-none focus:border-[#397052]"
+                className="mt-1.5 w-full rounded-md border border-[#dcd9d1] bg-white px-3 py-2 text-sm outline-none focus:border-[#397052] dark:border-white/10 dark:bg-[#1a1a1a] dark:text-white dark:focus:border-[#55a278]"
               />
             </label>
           </div>
@@ -670,7 +673,7 @@ export default function TenantsPage() {
               type="button"
               disabled={processingMoveOut}
               onClick={() => setMovingOutTenant(null)}
-              className="rounded-md px-4 py-2.5 text-sm font-semibold text-[#707770] hover:text-[#202522]"
+              className="rounded-md px-4 py-2.5 text-sm font-semibold text-[#707770] hover:text-[#202522] dark:text-gray-400 dark:hover:text-white"
             >
               Cancel
             </button>
@@ -678,7 +681,7 @@ export default function TenantsPage() {
               type="button"
               disabled={processingMoveOut}
               onClick={confirmMoveOut}
-              className="inline-flex items-center justify-center gap-2 rounded-md bg-[#9d4937] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#833c2d] disabled:opacity-50"
+              className="inline-flex items-center justify-center gap-2 rounded-md bg-[#9d4937] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#833c2d] disabled:opacity-50 dark:bg-[#e1684e] dark:hover:bg-[#d85033]"
             >
               <ArrowSquareOutIcon size={16} />{" "}
               {processingMoveOut ? "Processing..." : "Confirm move out"}
@@ -695,19 +698,19 @@ export default function TenantsPage() {
         className="p-5 sm:p-7"
       >
         {viewingTenant && (
-          <div className="space-y-6 text-[#202522]">
+          <div className="space-y-6 text-[#202522] dark:text-gray-200">
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
-                <p className="text-xs font-semibold uppercase text-[#707770]">Name</p>
-                <p className="text-lg font-medium">{viewingTenant.fullName}</p>
+                <p className="text-xs font-semibold uppercase text-[#707770] dark:text-gray-400">Name</p>
+                <p className="text-lg font-medium dark:text-gray-100">{viewingTenant.fullName}</p>
               </div>
               <div>
-                <p className="text-xs font-semibold uppercase text-[#707770]">Contact</p>
-                <p className="text-lg font-medium">{viewingTenant.phone}</p>
+                <p className="text-xs font-semibold uppercase text-[#707770] dark:text-gray-400">Contact</p>
+                <p className="text-lg font-medium dark:text-gray-100">{viewingTenant.phone}</p>
               </div>
               <div>
-                <p className="text-xs font-semibold uppercase text-[#707770]">Room</p>
-                <p className="text-lg font-medium">
+                <p className="text-xs font-semibold uppercase text-[#707770] dark:text-gray-400">Room</p>
+                <p className="text-lg font-medium dark:text-gray-100">
                   {viewingTenant.status === "ACTIVE"
                     ? `Room ${
                         viewingTenant.room?.roomNumber ??
@@ -718,61 +721,61 @@ export default function TenantsPage() {
                 </p>
               </div>
               <div>
-                <p className="text-xs font-semibold uppercase text-[#707770]">Move-in Date</p>
-                <p className="text-lg font-medium">{formatDate(viewingTenant.moveInDate)}</p>
+                <p className="text-xs font-semibold uppercase text-[#707770] dark:text-gray-400">Move-in Date</p>
+                <p className="text-lg font-medium dark:text-gray-100">{formatDate(viewingTenant.moveInDate)}</p>
               </div>
             </div>
 
             <div>
               <div className="mb-3 flex items-center justify-between">
-                <p className="text-sm font-bold uppercase tracking-wider text-[#397052]">Invoice History</p>
+                <p className="text-sm font-bold uppercase tracking-wider text-[#397052] dark:text-[#55a278]">Invoice History</p>
                 <button
                   onClick={() => {
                     setEditingBilling(null);
                     setIsEditorOpen(true);
                   }}
-                  className="inline-flex items-center gap-1.5 rounded-md bg-[#397052] px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-[#2e5942]"
+                  className="inline-flex items-center gap-1.5 rounded-md bg-[#397052] px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-[#2e5942] dark:bg-[#4d8a68] dark:hover:bg-[#397052]"
                 >
                   <PlusIcon weight="bold" /> Add Invoice
                 </button>
               </div>
               {loadingBillings ? (
-                <p className="text-sm text-[#707770]">Loading invoices...</p>
+                <p className="text-sm text-[#707770] dark:text-gray-400">Loading invoices...</p>
               ) : tenantBillings.length === 0 ? (
-                <div className="rounded-md border border-dashed border-[#cbc7bc] p-6 text-center text-sm text-[#707770]">
+                <div className="rounded-md border border-dashed border-[#cbc7bc] dark:border-white/10 p-6 text-center text-sm text-[#707770] dark:text-gray-400">
                   No invoices found for this tenant.
                 </div>
               ) : (
-                <div className="overflow-hidden rounded-md border border-[#dcd9d1] bg-[#f8f7f3]">
+                <div className="overflow-hidden rounded-md border border-[#dcd9d1] dark:border-white/10 bg-[#f8f7f3] dark:bg-[#1e1e1e]">
                   {/* Mobile Card Layout (< md screen width) */}
-                  <div className="divide-y divide-[#dcd9d1] md:hidden">
+                  <div className="divide-y divide-[#dcd9d1] dark:divide-white/10 md:hidden">
                     {tenantBillings.map((bill) => (
-                      <div key={bill.id} className="p-4 space-y-3 bg-[#f8f7f3]">
+                      <div key={bill.id} className="p-4 space-y-3 bg-[#f8f7f3] dark:bg-[#1e1e1e]">
                         <div className="flex justify-end">
                           <span
                             className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide shrink-0 ${
                               bill.status === "PAID"
-                                ? "bg-[#dcecdf] text-[#397052]"
+                                ? "bg-[#dcecdf] text-[#397052] dark:bg-[#397052]/20 dark:text-[#55a278]"
                                 : bill.status === "OVERDUE"
-                                ? "bg-[#fbeae5] text-[#9d4937]"
-                                : "bg-[#eee4d6] text-[#94613a]"
+                                ? "bg-[#fbeae5] text-[#9d4937] dark:bg-[#9d4937]/20 dark:text-[#e1684e]"
+                                : "bg-[#eee4d6] text-[#94613a] dark:bg-[#94613a]/20 dark:text-[#d39c71]"
                             }`}
                           >
                             {bill.status}
                           </span>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-2 rounded-md border border-[#e5e2da] bg-[#efede7]/60 p-2.5 text-xs">
+                        <div className="grid grid-cols-2 gap-2 rounded-md border border-[#e5e2da] dark:border-white/10 bg-[#efede7]/60 dark:bg-white/5 p-2.5 text-xs">
                           <div>
-                            <span className="text-[#858b84] block">Due Date:</span>
-                            <span className="font-medium text-[#202522]">{formatDate(bill.dueDate)}</span>
+                            <span className="text-[#858b84] dark:text-gray-400 block">Due Date:</span>
+                            <span className="font-medium text-[#202522] dark:text-gray-100">{formatDate(bill.dueDate)}</span>
                             {bill.datePaid && (
-                              <p className="text-[10px] text-[#397052] mt-0.5">Paid: {formatDate(bill.datePaid)}</p>
+                              <p className="text-[10px] text-[#397052] dark:text-[#55a278] mt-0.5">Paid: {formatDate(bill.datePaid)}</p>
                             )}
                           </div>
                           <div className="text-right">
-                            <span className="text-[#858b84] block">Total Amount:</span>
-                            <span className="text-sm font-bold text-[#202522]">₱{bill.totalAmount.toLocaleString()}</span>
+                            <span className="text-[#858b84] dark:text-gray-400 block">Total Amount:</span>
+                            <span className="text-sm font-bold text-[#202522] dark:text-gray-100">₱{bill.totalAmount.toLocaleString()}</span>
                           </div>
                         </div>
 
@@ -780,7 +783,7 @@ export default function TenantsPage() {
                         <div className="flex flex-wrap items-center justify-end gap-1.5 pt-1">
                           <button
                             onClick={() => setViewingBillingModal(bill)}
-                            className="inline-flex items-center gap-1 rounded-md border border-[#cbc7bc] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#202522] hover:border-[#202522]"
+                            className="inline-flex items-center gap-1 rounded-md border border-[#cbc7bc] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#202522] hover:border-[#202522] dark:border-white/10 dark:bg-[#1a1a1a] dark:text-gray-200 dark:hover:border-white/30 dark:hover:bg-white/5"
                           >
                             <EyeIcon size={14} /> View
                           </button>
@@ -788,14 +791,14 @@ export default function TenantsPage() {
                           {bill.status === "PAID" ? (
                             <button
                               onClick={() => setReceiptBilling(bill)}
-                              className="inline-flex items-center gap-1 rounded-md border border-[#b4d2be] bg-[#edf6f0] px-2.5 py-1.5 text-xs font-semibold text-[#397052] hover:bg-[#dcecdf]"
+                              className="inline-flex items-center gap-1 rounded-md border border-[#b4d2be] bg-[#edf6f0] px-2.5 py-1.5 text-xs font-semibold text-[#397052] hover:bg-[#dcecdf] dark:border-[#55a278]/30 dark:bg-[#397052]/10 dark:text-[#55a278] dark:hover:bg-[#397052]/20"
                             >
                               <ReceiptIcon size={14} /> Receipt
                             </button>
                           ) : (
                             <button
                               onClick={() => setSettlingBilling(bill)}
-                              className="inline-flex items-center gap-1 rounded-md border border-[#b4d2be] bg-[#edf6f0] px-2.5 py-1.5 text-xs font-semibold text-[#397052] hover:border-[#397052]"
+                              className="inline-flex items-center gap-1 rounded-md border border-[#b4d2be] bg-[#edf6f0] px-2.5 py-1.5 text-xs font-semibold text-[#397052] hover:border-[#397052] dark:border-[#55a278]/30 dark:bg-[#1a1a1a] dark:text-[#55a278] dark:hover:bg-[#397052]/10 dark:hover:border-[#55a278]/60"
                             >
                               <CheckCircleIcon size={14} /> Settle
                             </button>
@@ -803,13 +806,13 @@ export default function TenantsPage() {
 
                           <button
                             onClick={() => { setEditingBilling(bill); setIsEditorOpen(true); }}
-                            className="inline-flex items-center gap-1 rounded-md border border-[#cbc7bc] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#202522] hover:border-[#202522]"
+                            className="inline-flex items-center gap-1 rounded-md border border-[#cbc7bc] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#202522] hover:border-[#202522] dark:border-white/10 dark:bg-[#1a1a1a] dark:text-gray-200 dark:hover:border-white/30 dark:hover:bg-white/5"
                           >
                             <PencilSimpleIcon size={14} /> Edit
                           </button>
                           <button
                             onClick={() => setDeletingBilling(bill)}
-                            className="inline-flex items-center gap-1 rounded-md border border-[#e1b8ae] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#9d4937] hover:border-[#9d4937]"
+                            className="inline-flex items-center gap-1 rounded-md border border-[#e1b8ae] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#9d4937] hover:border-[#9d4937] dark:border-[#e1684e]/30 dark:bg-[#1a1a1a] dark:text-[#e1684e] dark:hover:bg-[#e1684e]/10 dark:hover:border-[#e1684e]/60"
                           >
                             <TrashIcon size={14} />
                           </button>
@@ -820,8 +823,8 @@ export default function TenantsPage() {
 
                   {/* Desktop Table Layout (>= md screen width) */}
                   <div className="hidden md:block overflow-x-auto">
-                    <table className="min-w-full divide-y divide-[#dcd9d1] text-left text-sm">
-                    <thead className="bg-[#efede7] text-xs font-semibold uppercase text-[#707770]">
+                    <table className="min-w-full divide-y divide-[#dcd9d1] dark:divide-white/10 text-left text-sm">
+                    <thead className="bg-[#efede7] dark:bg-white/5 text-xs font-semibold uppercase text-[#707770] dark:text-gray-400">
                       <tr>
                         <th className="px-4 py-2">Billing Date</th>
                         <th className="px-4 py-2">Due Date</th>
@@ -830,32 +833,32 @@ export default function TenantsPage() {
                         <th className="px-4 py-2 text-right">Actions</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-[#e5e2da] bg-white">
+                    <tbody className="divide-y divide-[#e5e2da] dark:divide-white/10 bg-white dark:bg-[#1e1e1e] text-[#202522] dark:text-gray-200">
                       {tenantBillings.map((bill) => (
-                        <tr key={bill.id}>
+                        <tr key={bill.id} className="hover:bg-[#f3f0e8]/50 dark:hover:bg-white/5 transition-colors">
                           <td className="px-4 py-2.5">{formatDate(bill.billingDate)}</td>
                           <td className="px-4 py-2.5">{formatDate(bill.dueDate)}</td>
                           <td className="px-4 py-2.5">
                             <span
                               className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
                                 bill.status === "PAID"
-                                  ? "bg-[#dcecdf] text-[#397052]"
+                                  ? "bg-[#dcecdf] text-[#397052] dark:bg-[#397052]/20 dark:text-[#55a278]"
                                   : bill.status === "OVERDUE"
-                                  ? "bg-[#f8e1e1] text-[#9d4937]"
-                                  : "bg-[#eee4d6] text-[#94613a]"
+                                  ? "bg-[#fbeae5] text-[#9d4937] dark:bg-[#9d4937]/20 dark:text-[#e1684e]"
+                                  : "bg-[#eee4d6] text-[#94613a] dark:bg-[#94613a]/20 dark:text-[#d39c71]"
                               }`}
                             >
                               {bill.status}
                             </span>
                           </td>
-                          <td className="px-4 py-2.5 text-right font-medium text-[#202522]">
+                          <td className="px-4 py-2.5 text-right font-medium text-[#202522] dark:text-gray-100">
                             ₱{bill.totalAmount.toLocaleString()}
                           </td>
                           <td className="px-4 py-2.5 text-right">
                             <div className="flex justify-end gap-1.5 sm:gap-2">
                               <button
                                 onClick={() => setViewingBillingModal(bill)}
-                                className="inline-flex items-center gap-1 rounded-md border border-[#cbc7bc] px-2.5 py-1.5 text-xs font-semibold text-[#202522] hover:border-[#202522]"
+                                className="inline-flex items-center gap-1 rounded-md border border-[#cbc7bc] px-2.5 py-1.5 text-xs font-semibold text-[#202522] hover:border-[#202522] dark:border-white/10 dark:bg-[#1a1a1a] dark:text-gray-200 dark:hover:border-white/30 dark:hover:bg-white/5"
                               >
                                 <EyeIcon size={14} /> View
                               </button>
@@ -863,14 +866,14 @@ export default function TenantsPage() {
                               {bill.status === "PAID" ? (
                                 <button
                                   onClick={() => setReceiptBilling(bill)}
-                                  className="inline-flex items-center gap-1 rounded-md border border-[#b4d2be] bg-[#edf6f0] px-2.5 py-1.5 text-xs font-semibold text-[#397052] hover:bg-[#dcecdf]"
+                                  className="inline-flex items-center gap-1 rounded-md border border-[#b4d2be] bg-[#edf6f0] px-2.5 py-1.5 text-xs font-semibold text-[#397052] hover:bg-[#dcecdf] dark:border-[#55a278]/30 dark:bg-[#397052]/10 dark:text-[#55a278] dark:hover:bg-[#397052]/20"
                                 >
                                   <ReceiptIcon size={14} /> Receipt
                                 </button>
                               ) : (
                                 <button
                                   onClick={() => setSettlingBilling(bill)}
-                                  className="inline-flex items-center gap-1 rounded-md border border-[#b4d2be] px-2.5 py-1.5 text-xs font-semibold text-[#397052] hover:border-[#397052]"
+                                  className="inline-flex items-center gap-1 rounded-md border border-[#b4d2be] bg-[#edf6f0] px-2.5 py-1.5 text-xs font-semibold text-[#397052] hover:border-[#397052] dark:border-[#55a278]/30 dark:bg-[#1a1a1a] dark:text-[#55a278] dark:hover:bg-[#397052]/10 dark:hover:border-[#55a278]/60"
                                 >
                                   <CheckCircleIcon size={14} /> Settle
                                 </button>
@@ -878,13 +881,13 @@ export default function TenantsPage() {
 
                               <button
                                 onClick={() => { setEditingBilling(bill); setIsEditorOpen(true); }}
-                                className="inline-flex items-center gap-1 rounded-md border border-[#cbc7bc] px-2.5 py-1.5 text-xs font-semibold text-[#202522] hover:border-[#202522]"
+                                className="inline-flex items-center gap-1 rounded-md border border-[#cbc7bc] px-2.5 py-1.5 text-xs font-semibold text-[#202522] hover:border-[#202522] dark:border-white/10 dark:bg-[#1a1a1a] dark:text-gray-200 dark:hover:border-white/30 dark:hover:bg-white/5"
                               >
                                 <PencilSimpleIcon size={14} /> Edit
                               </button>
                               <button
                                 onClick={() => setDeletingBilling(bill)}
-                                className="inline-flex items-center gap-1 rounded-md border border-[#e1b8ae] px-2.5 py-1.5 text-xs font-semibold text-[#9d4937] hover:border-[#9d4937]"
+                                className="inline-flex items-center gap-1 rounded-md border border-[#e1b8ae] px-2.5 py-1.5 text-xs font-semibold text-[#9d4937] hover:border-[#9d4937] dark:border-[#e1684e]/30 dark:bg-[#1a1a1a] dark:text-[#e1684e] dark:hover:bg-[#e1684e]/10 dark:hover:border-[#e1684e]/60"
                               >
                                 <TrashIcon size={14} />
                               </button>
@@ -901,7 +904,7 @@ export default function TenantsPage() {
             <div className="flex justify-end mt-6">
               <button
                 onClick={() => setViewingTenant(null)}
-                className="rounded-md border border-[#cbc7bc] px-4 py-2 text-sm font-semibold text-[#202522] hover:border-[#202522]"
+                className="rounded-md border border-[#cbc7bc] px-4 py-2 text-sm font-semibold text-[#202522] hover:border-[#202522] dark:border-white/10 dark:text-gray-300 dark:hover:border-white/30 dark:hover:text-white"
               >
                 Close
               </button>
