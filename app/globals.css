@@ -26,6 +26,16 @@ body {
 }
 
 @media print {
+  :root, :root.dark, html, html.dark, body, body.dark, .dark, .dark * {
+    color-scheme: light !important;
+    --background: #ffffff !important;
+    --foreground: #000000 !important;
+    --color-background: #ffffff !important;
+    --color-foreground: #000000 !important;
+    background-color: #ffffff !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
   body {
     overflow: visible !important;
   }

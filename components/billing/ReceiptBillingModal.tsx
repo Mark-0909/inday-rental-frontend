@@ -32,6 +32,24 @@ export default function ReceiptBillingModal({ billing, onClose }: ReceiptBilling
     return null;
   }
 
+  const handlePrint = () => {
+    const html = document.documentElement;
+    const body = document.body;
+    const wasDarkHtml = html.classList.contains("dark");
+    const wasDarkBody = body.classList.contains("dark");
+
+    if (wasDarkHtml) html.classList.remove("dark");
+    if (wasDarkBody) body.classList.remove("dark");
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        window.print();
+        if (wasDarkHtml) html.classList.add("dark");
+        if (wasDarkBody) body.classList.add("dark");
+      });
+    });
+  };
+
   return createPortal(
     <div
       id="printable-receipt-modal"
@@ -41,21 +59,33 @@ export default function ReceiptBillingModal({ billing, onClose }: ReceiptBilling
     >
       <style>{`
         @page {
-          margin: 0;
+          margin: 10mm 12mm;
           size: auto;
         }
         @media print {
+          :root, :root.dark, html, html.dark, body, body.dark, .dark, .dark * {
+            color-scheme: light !important;
+            --background: #ffffff !important;
+            --foreground: #000000 !important;
+            --color-background: #ffffff !important;
+            --color-foreground: #000000 !important;
+            background-color: #ffffff !important;
+            background: #ffffff !important;
+            color: #000000 !important;
+          }
           *, *::before, *::after {
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
             color-adjust: exact !important;
           }
           html, body {
+            background-color: #ffffff !important;
             background: #ffffff !important;
             margin: 0 !important;
             padding: 0 !important;
             width: 100% !important;
-            height: 100% !important;
+            height: auto !important;
+            overflow: visible !important;
           }
           body * {
             visibility: hidden !important;
@@ -65,9 +95,9 @@ export default function ReceiptBillingModal({ billing, onClose }: ReceiptBilling
             visibility: visible !important;
           }
           #printable-receipt-modal {
-            position: fixed !important;
-            left: 0 !important;
-            top: 0 !important;
+            position: relative !important;
+            left: auto !important;
+            top: auto !important;
             margin: 0 !important;
             padding: 0 !important;
             display: block !important;
@@ -76,9 +106,9 @@ export default function ReceiptBillingModal({ billing, onClose }: ReceiptBilling
             height: auto !important;
           }
           #printable-receipt-container {
-            position: absolute !important;
-            left: 0 !important;
-            top: 0 !important;
+            position: relative !important;
+            left: auto !important;
+            top: auto !important;
             margin: 0 !important;
             padding: 16px 14px !important;
             width: 82mm !important;
@@ -211,15 +241,7 @@ export default function ReceiptBillingModal({ billing, onClose }: ReceiptBilling
           </button>
           <button
             type="button"
-            onClick={() => {
-              const html = document.documentElement;
-              const wasDark = html.classList.contains("dark");
-              if (wasDark) html.classList.remove("dark");
-              setTimeout(() => {
-                window.print();
-                if (wasDark) html.classList.add("dark");
-              }, 50);
-            }}
+            onClick={handlePrint}
             className="inline-flex items-center justify-center gap-1.5 rounded-md bg-[#397052] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#2e5942]"
           >
             <PrinterIcon size={14} /> Print Receipt

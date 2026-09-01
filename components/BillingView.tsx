@@ -9,11 +9,14 @@ import {
   ReceiptIcon,
   TrashIcon,
   MagnifyingGlassIcon,
+  PrinterIcon,
+  CheckSquareIcon,
 } from "@phosphor-icons/react";
 import { endpoints } from "@/api/clients";
 import { Billing, Room, Tenant } from "@/types";
 import ViewBillingModal from "./billing/ViewBillingModal";
 import ReceiptBillingModal from "./billing/ReceiptBillingModal";
+import BulkReceiptBillingModal from "./billing/BulkReceiptBillingModal";
 import EditBillingModal from "./billing/EditBillingModal";
 import SettleBillingModal from "./billing/SettleBillingModal";
 import DeleteBillingModal from "./billing/DeleteBillingModal";
@@ -141,6 +144,39 @@ export default function BillingPage() {
       });
   }, [billings, filter, searchQuery]);
 
+  // Bulk receipt selection state
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [isBulkReceiptOpen, setIsBulkReceiptOpen] = useState(false);
+
+  const visiblePaidBillings = useMemo(() => {
+    return sortedBillings.filter((b) => b.status === "PAID");
+  }, [sortedBillings]);
+
+  const isAllPaidSelected = useMemo(() => {
+    if (visiblePaidBillings.length === 0) return false;
+    return visiblePaidBillings.every((b) => selectedIds.includes(b.id));
+  }, [visiblePaidBillings, selectedIds]);
+
+  const toggleSelectAllPaid = () => {
+    if (isAllPaidSelected) {
+      const visiblePaidSet = new Set(visiblePaidBillings.map((b) => b.id));
+      setSelectedIds((prev) => prev.filter((id) => !visiblePaidSet.has(id)));
+    } else {
+      const newIds = new Set([...selectedIds, ...visiblePaidBillings.map((b) => b.id)]);
+      setSelectedIds(Array.from(newIds));
+    }
+  };
+
+  const toggleSelectOne = (id: number) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    );
+  };
+
+  const selectedPaidBillings = useMemo(() => {
+    return billings.filter((b) => selectedIds.includes(b.id) && b.status === "PAID");
+  }, [billings, selectedIds]);
+
   if (loading) return <p className="text-sm text-[#707770]">Loading billing ledger...</p>;
 
   return (
@@ -166,19 +202,36 @@ export default function BillingPage() {
 
       {/* Filters and Search */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex gap-1 bg-[#e7e3d9] dark:bg-[#1a1a1a] p-1 w-fit rounded-md border border-transparent dark:border-white/10">
-          {(["ALL", "UNPAID", "OVERDUE", "PAID"] as const).map((option) => (
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="flex gap-1 bg-[#e7e3d9] dark:bg-[#1a1a1a] p-1 w-fit rounded-md border border-transparent dark:border-white/10">
+            {(["ALL", "UNPAID", "OVERDUE", "PAID"] as const).map((option) => (
+              <button
+                key={option}
+                type="button"
+                onClick={() => setFilter(option)}
+                className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${
+                  filter === option ? "bg-[#fbfaf7] text-[#202522] shadow-sm dark:bg-white/10 dark:text-gray-100" : "text-[#707770] hover:text-[#202522] dark:text-gray-400 dark:hover:text-gray-200"
+                }`}
+              >
+                {option === "ALL" ? "All Invoices" : option === "UNPAID" ? "Unpaid" : option === "OVERDUE" ? "Overdue" : "Paid"}
+              </button>
+            ))}
+          </div>
+
+          {visiblePaidBillings.length > 0 && (
             <button
-              key={option}
               type="button"
-              onClick={() => setFilter(option)}
-              className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors ${
-                filter === option ? "bg-[#fbfaf7] text-[#202522] shadow-sm dark:bg-white/10 dark:text-gray-100" : "text-[#707770] hover:text-[#202522] dark:text-gray-400 dark:hover:text-gray-200"
+              onClick={toggleSelectAllPaid}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md border transition-colors ${
+                isAllPaidSelected
+                  ? "border-[#397052] bg-[#edf6f0] text-[#397052] dark:border-[#55a278] dark:bg-[#397052]/20 dark:text-[#55a278]"
+                  : "border-[#cbc7bc] bg-white text-[#707770] hover:text-[#202522] dark:border-white/10 dark:bg-[#1a1a1a] dark:text-gray-400 dark:hover:text-gray-200"
               }`}
             >
-              {option === "ALL" ? "All Invoices" : option === "UNPAID" ? "Unpaid" : option === "OVERDUE" ? "Overdue" : "Paid"}
+              <CheckSquareIcon size={14} />
+              {isAllPaidSelected ? "Deselect All Paid" : "Select All Paid"}
             </button>
-          ))}
+          )}
         </div>
         <div className="relative w-full sm:max-w-xs">
           <MagnifyingGlassIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-[#858b84] dark:text-gray-500" size={16} />
@@ -191,6 +244,34 @@ export default function BillingPage() {
           />
         </div>
       </div>
+
+      {/* Floating Selection Banner */}
+      {selectedPaidBillings.length > 0 && (
+        <div className="sticky top-4 z-20 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-[#b4d2be] bg-[#edf6f0] px-4 py-3 shadow-md dark:border-[#55a278]/30 dark:bg-[#1e2a22] dark:text-gray-100">
+          <div className="flex items-center gap-2 text-xs font-semibold text-[#397052] dark:text-[#55a278]">
+            <CheckSquareIcon size={18} />
+            <span>
+              {selectedPaidBillings.length} {selectedPaidBillings.length === 1 ? "Paid Invoice" : "Paid Invoices"} Selected
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setSelectedIds([])}
+              className="rounded-md border border-[#cbc7bc] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#707770] hover:text-[#202522] dark:border-white/10 dark:bg-[#1a1a1a] dark:text-gray-400 dark:hover:text-white"
+            >
+              Clear Selection
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsBulkReceiptOpen(true)}
+              className="inline-flex items-center gap-1.5 rounded-md bg-[#397052] px-3.5 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-[#2e5942] dark:bg-[#4d8a68] dark:hover:bg-[#397052]"
+            >
+              <PrinterIcon size={15} /> Print Selected Receipts ({selectedPaidBillings.length})
+            </button>
+          </div>
+        </div>
+      )}
 
       {error && (
         <p role="alert" className="border-l-2 border-[#9d4937] bg-[#f8f7f3] px-4 py-3 text-sm text-[#9d4937] dark:border-[#e1684e] dark:bg-[#e1684e]/10 dark:text-[#e1684e]">
@@ -209,11 +290,21 @@ export default function BillingPage() {
               {sortedBillings.map((bill) => (
                 <div key={bill.id} className="p-4 space-y-3 bg-[#f8f7f3] dark:bg-[#1e1e1e]">
                   <div className="flex items-start justify-between gap-2">
-                    <div>
-                      <p className="font-semibold text-base text-[#202522] dark:text-gray-100">
-                        {bill.tenant?.fullName ?? "Unknown Tenant"}
-                      </p>
-                      <p className="text-xs text-[#707770] dark:text-gray-400">Room {bill.room?.roomNumber ?? "-"}</p>
+                    <div className="flex items-center gap-2.5">
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.includes(bill.id)}
+                        disabled={bill.status !== "PAID"}
+                        onChange={() => toggleSelectOne(bill.id)}
+                        title={bill.status === "PAID" ? "Select for receipt printing" : "Only paid invoices can be printed"}
+                        className="h-4 w-4 rounded border-[#cbc7bc] text-[#397052] focus:ring-[#397052] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed dark:border-white/20 dark:bg-[#1a1a1a]"
+                      />
+                      <div>
+                        <p className="font-semibold text-base text-[#202522] dark:text-gray-100">
+                          {bill.tenant?.fullName ?? "Unknown Tenant"}
+                        </p>
+                        <p className="text-xs text-[#707770] dark:text-gray-400">Room {bill.room?.roomNumber ?? "-"}</p>
+                      </div>
                     </div>
                     <span
                       className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide shrink-0 ${
@@ -289,6 +380,16 @@ export default function BillingPage() {
               <table className="min-w-full divide-y divide-[#dcd9d1] dark:divide-white/10 text-left">
                 <thead className="bg-[#efede7] dark:bg-white/5 text-xs font-semibold uppercase tracking-[0.12em] text-[#707770] dark:text-gray-400">
                   <tr>
+                    <th className="px-4 py-3 w-10 text-center">
+                      <input
+                        type="checkbox"
+                        checked={isAllPaidSelected}
+                        onChange={toggleSelectAllPaid}
+                        disabled={visiblePaidBillings.length === 0}
+                        title="Select all paid invoices"
+                        className="h-4 w-4 rounded border-[#cbc7bc] text-[#397052] focus:ring-[#397052] cursor-pointer disabled:cursor-not-allowed dark:border-white/20 dark:bg-[#1a1a1a]"
+                      />
+                    </th>
                     <th className="px-5 py-3">Tenant & Room</th>
                     <th className="px-5 py-3">Due Date</th>
                     <th className="px-5 py-3">Total Amount</th>
@@ -298,7 +399,24 @@ export default function BillingPage() {
                 </thead>
                 <tbody className="divide-y divide-[#e5e2da] dark:divide-white/10 text-sm text-[#202522] dark:text-gray-200">
                   {sortedBillings.map((bill) => (
-                    <tr key={bill.id} className="bg-[#f8f7f3] transition-colors hover:bg-[#f3f0e8]/50 dark:bg-[#1e1e1e] dark:hover:bg-white/5">
+                    <tr
+                      key={bill.id}
+                      className={`transition-colors dark:hover:bg-white/5 ${
+                        selectedIds.includes(bill.id)
+                          ? "bg-[#edf6f0]/70 dark:bg-[#397052]/10"
+                          : "bg-[#f8f7f3] hover:bg-[#f3f0e8]/50 dark:bg-[#1e1e1e]"
+                      }`}
+                    >
+                      <td className="px-4 py-3.5 text-center">
+                        <input
+                          type="checkbox"
+                          checked={selectedIds.includes(bill.id)}
+                          disabled={bill.status !== "PAID"}
+                          onChange={() => toggleSelectOne(bill.id)}
+                          title={bill.status === "PAID" ? "Select for receipt printing" : "Only paid invoices can be printed"}
+                          className="h-4 w-4 rounded border-[#cbc7bc] text-[#397052] focus:ring-[#397052] cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed dark:border-white/20 dark:bg-[#1a1a1a]"
+                        />
+                      </td>
                       <td className="px-5 py-3.5">
                         <p className="font-semibold text-[#202522] dark:text-gray-100">{bill.tenant?.fullName ?? "Unknown Tenant"}</p>
                         <p className="text-xs text-[#707770] dark:text-gray-400">Room {bill.room?.roomNumber ?? "-"}</p>
@@ -388,6 +506,13 @@ export default function BillingPage() {
         billing={receiptBilling}
         onClose={() => setReceiptBilling(null)}
       />
+
+      {isBulkReceiptOpen && (
+        <BulkReceiptBillingModal
+          billings={selectedPaidBillings}
+          onClose={() => setIsBulkReceiptOpen(false)}
+        />
+      )}
 
       <EditBillingModal
         isOpen={isEditorOpen}
