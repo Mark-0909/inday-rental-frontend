@@ -152,8 +152,8 @@ export default function ReceiptBillingModal({ billing, onClose }: ReceiptBilling
 
         <div className="relative z-10 space-y-3 font-mono text-[11px] leading-tight text-[#202522] dark:text-gray-200 print:text-[#202522]">
           <div className="text-center">
-            <div className="mx-auto mb-1 flex h-7 w-7 items-center justify-center rounded-full bg-[#dcecdf] text-[#397052] dark:bg-[#397052]/20 dark:text-[#55a278] print:bg-transparent print:text-black">
-              <HouseIcon size={14} weight="fill" className="print:hidden" />
+            <div className="mx-auto mb-1 flex h-7 w-7 items-center justify-center rounded-full bg-[#dcecdf] text-[#397052] dark:bg-[#397052]/20 dark:text-[#55a278] print:bg-[#dcecdf] print:text-[#397052]">
+              <HouseIcon size={14} weight="fill" />
             </div>
             <h2 className="text-xs font-bold tracking-wider uppercase text-[#202522] dark:text-gray-100 print:text-[#202522]">Inday Rental Properties</h2>
             <p className="text-[10px] text-[#707770] dark:text-gray-400 print:text-[#707770]">Official Payment Receipt</p>
